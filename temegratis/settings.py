@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,7 +10,7 @@ PROJECT_ROOT = os.path.dirname(__file__)
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'y^hh2!dukp2e!8o(04j01=a&&rc_er_#=9f&!jp%uux8unx%@p'
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -116,7 +117,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(PROJECT_ROOT, 'static')]
 MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'static/images')
-
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # SMPT Configuration
 
@@ -124,9 +125,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = '587'
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'stefanspinu66@gmail.com'
-EMAIL_HOST_PASSWORD = 'spinu.spinu'
-
-# Stripe
-STRIPE_PUBLIC_KEY = 'pk_test_51IWhVZLuTaza0Xynf6KnPy5PrTsDA50xpqF0YOR8EX0pLObKdc7DSf7fR51kAaKstsxCUOkRYPTt9OZK533HZKsT00kwimel4I'
-STRIPE_SECRET_KEY = 'sk_test_51IWhVZLuTaza0XynUneN1BxRKw1fH0PwpD9yojOUKJtBDQc4uQErPnMstcEqLwXFeBSrE10JGamvK6qUmWhjzuYO00vfapODj9'
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
