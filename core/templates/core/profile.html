@@ -1,0 +1,347 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="profile">
+  <div class="my-orders__sidebar sidebar-rigth">
+<div class="sidebar-rigth__title">Comenzi recomandate</div>
+<div class="sidebar-rigth__block">
+<div class="sidebar-rigth__block-header">
+  <span class="sidebar-rigth__id"># 6193450</span>
+  <div class="sidebar-rigth__cross">
+    <span></span>
+  </div>
+</div>
+<div class="sidebar-rigth__block-body">
+  <div class="sidebar-rigth__description">
+    <p>Problemă de geometrie, teorema lui pitagora</p>
+  </div>
+  <a href="#" class="sidebar-rigth__task">
+    Ex. 5 pag 209 manual clasa a 9a
+  </a>
+  <div class="sidebar-rigth__info">
+    <span class="sidebar-rigth__info-name">Preț:</span>
+    <span class="sidebar-rigth__info-nr">300 Lei</span>
+  </div>
+  <div class="sidebar-rigth__info">
+    <span class="sidebar-rigth__info-name">Termen limită:</span>
+    <span class="sidebar-rigth__info-nr">17.02.2021</span>
+  </div>
+</div>
+</div>
+<div class="sidebar-rigth__block premium">
+<div class="sidebar-rigth__block-header">
+  <span class="sidebar-rigth__id"># 6193450</span>
+  <div class="sidebar-rigth__cross">
+    <span></span>
+  </div>
+</div>
+<div class="sidebar-rigth__block-body">
+  <div class="sidebar-rigth__description">
+    <p>Problemă de geometrie, teorema lui pitagora</p>
+  </div>
+  <a href="#" class="sidebar-rigth__task">
+    Ex. 5 pag 209 manual clasa a 9a
+  </a>
+  <div class="sidebar-rigth__info">
+    <span class="sidebar-rigth__info-name">Preț:</span>
+    <span class="sidebar-rigth__info-nr">300 Lei</span>
+  </div>
+  <div class="sidebar-rigth__info">
+    <span class="sidebar-rigth__info-name">Termen limită:</span>
+    <span class="sidebar-rigth__info-nr">17.02.2021</span>
+  </div>
+</div>
+</div>
+<div class="sidebar-rigth__block">
+<div class="sidebar-rigth__block-header">
+  <span class="sidebar-rigth__id"># 6193450</span>
+  <div class="sidebar-rigth__cross">
+    <span></span>
+  </div>
+</div>
+<div class="sidebar-rigth__block-body">
+  <div class="sidebar-rigth__description">
+    <p>Problemă de geometrie, teorema lui pitagora</p>
+  </div>
+  <a href="#" class="sidebar-rigth__task">
+    Ex. 5 pag 209 manual clasa a 9a
+  </a>
+  <div class="sidebar-rigth__info">
+    <span class="sidebar-rigth__info-name">Preț:</span>
+    <span class="sidebar-rigth__info-nr">300 Lei</span>
+  </div>
+  <div class="sidebar-rigth__info">
+    <span class="sidebar-rigth__info-name">Termen limită:</span>
+    <span class="sidebar-rigth__info-nr">17.02.2021</span>
+  </div>
+</div>
+</div>
+</div>
+  <div class="profile__main">
+    <div class="profile__personal">
+      <div class="profile__mini-info">
+        <div class="profile__important">
+          {% if request.user.freelancer %}
+          <div class="profile__name">{{ request.user.freelancer.first_name }}</div>
+          {% elif request.user.client %}
+          <div class="profile__name">{{ request.user.client.first_name }}</div>
+          {% else %}
+          <div class="profile__name">{{ request.user.name }}</div>
+          {% endif %}
+          <div class="profile__online" style="display: none;"> <div class="profile__online-circle"></div> ultima dată a fost online azi 20:20</div>
+        </div>
+        {% if accepted_orders.count < 10 %}
+        <div class="profile__level">
+          autor nou
+        </div>
+        {% elif accepted_orders.count > 10 and accepted_orders.count < 100 %}
+        <div class="profile__level">
+          autor intermediar
+        </div>
+        {% else %}
+        <div class="profile__level">
+          autor expert
+        </div>
+        {% endif %}
+      </div>
+      {% if freelancer.description %}
+      <div class="profile__big-info">
+        <div class="profile__block">
+          <div class="profile__desc-label">Despre tine</div>
+          <div class="profile__description_long" id="profile__description_long">{{ freelancer.description }}</div>
+          <div class="profile__description" id="profile__description">{{ freelancer.short_description }}</div>
+          <div class="profile__toggle-description" id="profile__toggle-description">Detalii</div>
+        </div>
+        <div class="profile__block">
+          <div class="profile__desc-label">Limbile cunoscute</div>
+          {% for language in freelancer.languages.all %}
+          <div class="profile__description">{{ language }}</div>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <div class="profile__big-info" style="display: none;">
+        <div class="profile__block">
+          <div class="profile__desc-label">Despre tine</div>
+          <div class="profile__description_long" id="profile__description_long">{{ freelancer.description }}</div>
+          <div class="profile__description" id="profile__description">{{ freelancer.short_description }}</div>
+          <div class="profile__toggle-description" id="profile__toggle-description">Detalii</div>
+        </div>
+        <div class="profile__block">
+          <div class="profile__desc-label">Limbile cunoscute</div>
+          {% for language in freelancer.languages.all %}
+          <div class="profile__description">{{ language }}</div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    <div class="profile__rating rating-profile">
+      <div class="rating-profile__reviews rating-profile__col">
+        {% if percentage_positive_raiting > 50 %}
+        <div class="rating-profile__header">
+          <div class="rating-profile__img">
+            <img src="{% static 'images/positive-face.webp' %}" alt="">
+          </div>
+          <div class="rating-profile__text">
+            <div class="rating-profile__title">Recenzii</div>
+            <div class="rating-profile__grade">Perfect</div>
+          </div>
+        </div>
+        {% elif percentage_positive_raiting == 50 %}
+        <div class="rating-profile__header">
+          <div class="rating-profile__img">
+            <img src="{% static 'images/positive-face.webp' %}" alt="">
+          </div>
+          <div class="rating-profile__text">
+            <div class="rating-profile__title">Recenzii</div>
+            <div class="rating-profile__grade">Bine</div>
+          </div>
+        </div>
+        {% else %}
+        <div class="rating-profile__header">
+          <div class="rating-profile__img">
+            <img src="{% static 'images/negative-face.webp' %}" alt="">
+          </div>
+          <div class="rating-profile__text">
+            <div class="rating-profile__title">Recenzii</div>
+            <div class="rating-profile__grade">Rău</div>
+          </div>
+        </div>
+        {% endif %}
+        <div class="rating-profile__body">
+          <div class="rating-profile__progress">
+            <div class="rating-profile__progress-opposite"></div>
+          </div>
+        </div>
+        <div class="rating-profile__footer">
+          <div class="rating-profile__review-block">
+            <div class="rating-profile__positive rating-profile__block">
+              <div class="rating-profile__procent rating-profile__procent-good" data-value="{{ percentage_positive_raiting }}">{{ percentage_positive_raiting }}% <span>({{ positive_rating }})</span></div>
+              <div class="rating-profile__type">Pozitive</div>
+            </div>
+            <div class="rating-profile__negative rating-profile__block">
+              <div class="rating-profile__procent rating-profile__procent-bad" data-value="{{ percentage_negative_rating }}">{{ percentage_negative_rating }}% <span>({{ negative_rating }})</span></div>
+              <div class="rating-profile__type">Negative</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="rating-profile__time rating-profile__col">
+        <div class="rating-profile__header">
+          <div class="rating-profile__img">
+            <img src="{% static 'images/beginner.webp' %}" alt="">
+          </div>
+          <div class="rating-profile__text">
+            <div class="rating-profile__title">Termenul de livrare</div>
+            <div class="rating-profile__grade">Începător</div>
+          </div>
+        </div>
+        <div class="rating-profile__body">
+          <div class="rating-profile__progress">
+            <div class="rating-profile__progress-opposite"></div>
+          </div>
+        </div>
+        <div class="rating-profile__footer">
+          <div class="rating-profile__review-block">
+            <div class="rating-profile__positive rating-profile__block">
+              <div class="rating-profile__procent rating-profile__procent-good" data-value="{{ percentage_in_time }}">{{ percentage_in_time }}% <span>({{ in_time }})</span></div>
+              <div class="rating-profile__type">La timp</div>
+            </div>
+            <div class="rating-profile__negative rating-profile__block">
+              <div class="rating-profile__procent rating-profile__procent-bad" data-value="{{ percentage_late }}">{{ percentage_late }}% <span>({{ late }})</span></div>
+              <div class="rating-profile__type">Cu întârzierii</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="profile__info">
+      <ul class="profile__list">
+        <li class="profile__info-item active">Recenzii ({{ feedbacks.count }})</li>
+        <li class="profile__info-item">Comenzi ({{ accepted_orders.count }})</li>
+        <li class="profile__info-item">Statistică</li>
+        <li class="profile__info-item" style="display: none;">Portfoliu (0)</li>
+      </ul>
+      <div class="profile__body">
+        <div class="profile__tab-block profile__reviews active">
+          {% for feedback in feedbacks %}
+          <div class="profile__review review-profile">
+            <a href="#" class="review-profile__person">
+              <div class="review-profile__img">
+                <picture><source srcset="{% static 'images/' %}{{  feedback.accepted_order.order.client.profile_pic }}" type="image/webp"><img src="{% static 'images/' %}{{  feedback.accepted_order.order.client.profile_pic }}" alt="" class="sidebar__avatar"></picture>
+              </div>
+              <div class="review-profile__name">{{ feedback.accepted_order.order.client.first_name }} {{ feedback.accepted_order.order.client.last_name }}</div>
+            </a>
+            <div class="review-profile__main">
+              <div class="review-profile__header">
+                <div class="review-profile__title">{{ feedback.accepted_order.order.title }}</div>
+                <div class="review-profile__stars">
+                  <span class="review-profile__star fa fa-star {% if feedback.rating >= 1 %} checked {% endif %}"></span>
+                  <span class="review-profile__star fa fa-star {% if feedback.rating >= 2 %} checked {% endif %}"></span>
+                  <span class="review-profile__star fa fa-star {% if feedback.rating >= 3 %} checked {% endif %}"></span>
+                  <span class="review-profile__star fa fa-star {% if feedback.rating >= 4 %} checked {% endif %}"></span>
+                  <span class="review-profile__star fa fa-star {% if feedback.rating >= 5 %} checked {% endif %}"></span>
+                </div>
+              </div>
+              <div class="review-profile__comment">{{ feedback.comment }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div> 
+        <div class="profile__tab-block profile__finished-work finished-work-profile">
+          <table class="finished-work-profile__table">
+            <tr>
+              <th>Id</th>
+              <th>Titlul</th>
+              <th>Client</th>
+              <th>Timp</th>
+              <th>Plătit</th>
+              <th>Suma</th>
+            </tr>
+            {% for accepted_order in accepted_orders %}
+            <tr>
+              {% if forloop.counter < 10 %}
+              <td>0{{ forloop.counter }}</td>
+              {% else %}
+              <td>{{ forloop.counter }}</td>
+              {% endif %}
+              <td>{{ accepted_order.order.title }}</td>
+              <td>{{ accepted_order.order.client.first_name }} {{ accepted_order.order.client.last_name }}</td>
+              {% if accepted_order.delivered_date <= accepted_order.order.limit_date %}
+              <td>În termen</td>
+              {% elif accepted_order.delivered_date > accepted_order.order.limit_date %}
+              <td>Depășit de termenul limită</td>
+              {% else %}
+              <td>În proces</td>
+              {% endif %}
+              {% if accepted_order.paied %}
+              <td class="paied">Da</td>
+              {% else %}
+              <td>Nu</td>
+              {% endif %}
+              <td>{{ accepted_order.order.price }}Lei</td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+        <div class="profile__tab-block profile__statistics statistics-profile">
+          <!-- <div class="statistics-profile__add">Add content</div> -->
+          <div class="statistics-profile__work-type">
+            <div class="statistics-profile__title">Lucrări după tip</div>
+            <div class="statistics-profile__body">
+              {% for key, val in work_types %}
+              <div class="statistics-profile__column">
+                <div class="statistics-profile__span">{{ key }}</div>
+              </div>
+              <div class="statistics-profile__column">
+                <p class="statistics-profile__nr" data-value="{{ val }}"><b>{{ val }}%</b></p>
+              </div>
+              <div class="statistics-profile__column">
+                <div class="statistics-profile__progress">
+                  <div class="statistics-profile__progress-opposite"></div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="statistics-profile__lessons">
+            <div class="statistics-profile__title">Lucrări după lecție</div>
+            <div class="statistics-profile__body">
+              {% for key, val in lessons %}
+              <div class="statistics-profile__column">
+                <div class="statistics-profile__span">{{ key }}</div>
+              </div>
+              <div class="statistics-profile__column">
+                <p class="statistics-profile__nr" data-value="{{ val }}"><b>{{ val }}%</b></p>
+              </div>
+              <div class="statistics-profile__column">
+                <div class="statistics-profile__progress">
+                  <div class="statistics-profile__progress-opposite"></div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          </div>
+        </div>
+        <div class="profile__tab-block profile__portfolio portfolio-profile" style="display: none;">
+          <div class="portfolio-profile__body">
+            <a href="" class="portfolio-profile__row">
+              <div class="portfolio-profile__title">Privet</div>
+              <div class="portfolio-profile__download">
+                <img src="{% static 'images/download.png' %}" alt="download">
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+{% include 'core/sidebar_left.html' %}
+
+  </div>
+{% include 'core/footer.html' %}
+</div>
+{% endblock %}
+    

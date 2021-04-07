@@ -1,0 +1,273 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  .balance {
+  display: grid;
+  grid-template-columns: 20% 80%;
+  grid-template-areas: 'sidebar main'
+  'sidebar -';
+}
+
+.balance__main {
+  grid-area: main;
+  background: #fff;
+  padding: 20px 0px;
+}
+
+.balance__budget {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  padding: 0px 20px;
+}
+
+.balance__block {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+  width: 100%;
+}
+
+.balance__navigation {
+  padding: 40px 0px;
+}
+
+.balance__list {
+  list-style: none;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  border-bottom: 1px solid #cac8c8;
+  padding: 0px 20px;
+}
+
+.balance__item {
+  margin: 0px 30px 0px 0px;
+  padding: 0px 0px 14px 0px;
+  color: #8d8d8d;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.balance__item.active {
+  border-bottom: 3px solid #46c277;
+  color: #000;
+}
+
+.balance__item:hover {
+  color: #000;
+}
+
+.balance__info {
+  padding: 0px 20px;
+}
+
+.balance__table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #dddddd;
+  display: none;
+}
+
+.balance__table td,
+.balance__table th {
+  border-top: 1px solid #dddddd;
+  padding: 10px 20px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Roboto', sans-serif;
+}
+
+.balance__table th {
+  background-color: #A8D5BA;
+  color: #000;
+}
+
+.balance__table.active {
+  display: table;
+}
+
+.balance__title {
+  font-size: 20px;
+  color: #727272;
+  margin: 0px 0px 20px 0px;
+  -ms-flex-item-align: start;
+      align-self: flex-start;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto;
+}
+
+.balance__money {
+  font-size: 30px;
+  line-height: 1.2;
+  margin: 0px 0px 15px 0px;
+}
+
+.balance__money_g {
+  color: #46c277;
+}
+
+.balance__info {
+  font-size: 13px;
+  color: #9a9a9a;
+}
+
+.balance__info a {
+  color: #46c277;
+}
+
+.balance__btn button {
+  background: #eba0fd;
+  outline: none;
+  border: none;
+  border-radius: 3px;
+  min-width: 150px;
+  height: 40px;
+  -webkit-transition: all .1 ease-in-out;
+  -o-transition: all .1 ease-in-out;
+  transition: all .1 ease-in-out;
+  padding: 0px 20px;
+  cursor: pointer;
+}
+
+.balance__btn button:hover {
+  background: #eeaaff;
+}
+
+.balance__btn button span {
+  position: relative;
+  padding: 0px 20px 0px 40px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: 'Open Sans', sans-serif;
+  text-transform: uppercase;
+}
+
+.balance__btn button span::before {
+  content: url("../img/cash-withdrawal.png");
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+</style>
+
+<div class="balance">
+  <div class="balance__main">
+    <div class="balance__budget">
+      <div class="balance__block">
+        <div class="balance__title">Fonduri disponibile</div>
+        <div class="balance__money">0 lei</div>
+        <a href="#" class="balance__btn"><button><span>Retrage banii</span></button></a>
+      </div>
+      <div class="balance__block">
+        <div class="balance__title">Fonduri înghețate</div>
+        <div class="balance__money balance__money_g">0 lei</div>
+        <div class="balance__info">
+          Fondurile înghețate vor fi creditate în contul dvs. la finalizare după încheierea<a href="#"> perioadei de garanție</a> a comenzii</div>
+      </div>
+    </div>
+    <div class="balance__navigation">
+      <ul class="balance__list">
+        <li class="balance__item balance__item_withdraw active">Cereri de retragere</li>
+        <li class="balance__item balance__item_history">Istoria tranzacțiilor</li>
+        <li class="balance__item balance__item_freezed">Tranzacții înghețate</li>
+      </ul>
+    </div>
+    <div class="balance__info">
+      <table class="balance__table balance__table_withdraw active">
+        <tr>
+          <th>Id cerere</th>
+          <th>Sistema de plată</th>
+          <th>Summa</th>
+          <th>Timpul</th>
+          <th>Statutul</th>
+        </tr>
+        <tr>
+          <td>01</td>
+          <td>Visa</td>
+          <td>230 Lei</td>
+          <td>21.03.21 16:00</td>
+          <td>Finalizat</td>
+        </tr>
+        <tr>
+          <td>01</td>
+          <td>Visa</td>
+          <td>230 Lei</td>
+          <td>21.03.21 16:00</td>
+          <td>Finalizat</td>
+        </tr>
+        <tr>
+          <td>01</td>
+          <td>Visa</td>
+          <td>230 Lei</td>
+          <td>21.03.21 16:00</td>
+          <td>Finalizat</td>
+        </tr>
+      </table>
+      <table class="balance__table balance__table_history">
+        <tr>
+          <th>Statut</th>
+          <th>Data</th>
+          <th>Venire</th>
+          <th>Ieșire</th>
+        </tr>
+        <tr>
+          <td>Finalizat</td>
+          <td>21.03.21 16:00</td>
+          <td>230 Lei</td>
+          <td>- lei</td>
+        </tr>
+      </table>
+      <table class="balance__table balance__table_freezed">
+        <tr>
+          <th>Titlu</th>
+          <th>Data</th>
+          <th>Data sosirii</th>
+        </tr>
+        <tr>
+          <td>Ttitlul la bani înghețații</td>
+          <td>230 Lei</td>
+          <td>21.03.21 16:00</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  {% include 'core/sidebar_left.html' %}
+</div>
+
+<script>
+  const balanceItem = document.querySelectorAll('.balance__item')
+  const balanceTable = document.querySelectorAll('.balance__table')
+  for(let i = 0; i <= balanceItem.length - 1; i++) {
+    balanceItem[i].addEventListener('click', function (e) {
+      e.target.classList.toggle('active')
+      balanceTable[i].classList.toggle('active')
+      for(let j = 0; j <= balanceItem.length - 1; j++) {
+        if (j != i) {
+          balanceItem[j].classList.remove('active')
+          balanceTable[j].classList.remove('active')
+        }
+      }
+    })
+  }
+</script>
+{% endblock %}
+    

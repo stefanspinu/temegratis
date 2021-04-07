@@ -1,0 +1,43 @@
+{% load static %}
+<div class="sidebar">
+  <div class="sidebar__user">
+  <picture><source srcset="{% static 'images/' %}{{  request.user.client.profile_pic }}" type="image/webp"><img src="{% static 'images/' %}{{  request.user.client.profile_pic }}" alt="profile picture" class="sidebar__avatar"></picture>
+  </div>
+  <div class="sidebar__notifications notifications-sidebar">
+    <span class="notifications-sidebar__title">Notificații</span>
+    <ul class="notifications-sidebar__list">
+      <li>
+        <a href="{% url 'my_orders_client' %}" class="notifications-sidebar__link">
+          <div class="sidebar__info">
+            <span class="notifications-sidebar__link">Toate</span>
+            <span class="notifications-sidebar__link">{{ clients_orders }}</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'client_orders_auction' request.user.client.id %}" class="notifications-sidebar__link">
+          <div class="sidebar__info">
+            <span class="notifications-sidebar__link">În aucțion</span>
+            <span class="notifications-sidebar__link">{{ client_auction_orders }}</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'client_orders' request.user.client.id %}" class="notifications-sidebar__link">
+          <div class="sidebar__info">
+            <span class="notifications-sidebar__link">În lucru</span>
+            <span class="notifications-sidebar__link">{{ in_work_orders }}</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="" class="notifications-sidebar__link">
+          <div class="sidebar__info">
+            <span class="notifications-sidebar__link">Finisate</span>
+            <span class="notifications-sidebar__link">{{ finished_orders }}</span>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

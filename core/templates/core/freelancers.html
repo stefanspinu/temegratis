@@ -1,0 +1,350 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  .freelancers {
+  display: grid;
+  grid-template-columns: 20% 80%;
+}
+
+.freelancers__sidebar {
+  font-family: 'Open Sans', sans-serif;
+  margin: 0px 20px 0px 0px;
+  font-weight: 600;
+}
+
+.freelancers__work-category, .freelancers__work-type {
+  background: #fff;
+  margin: 0px 0px 20px 0px;
+  border: 2px solid #e1e1e1;
+}
+
+.freelancers__categories {
+  list-style : none;
+}
+
+.freelancers__category, .freelancers__categories li {
+  list-style : none;
+  font-size: 14px;
+  padding: 16px 20px;
+  border-top: 1px solid #ddd;
+  color: #46c277;
+  position: relative;
+}
+
+.freelancers__category label, .freelancers__categories li label {
+  text-decoration: dashed underline;
+}
+
+.freelancers__category label input, .freelancers__categories li label input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  /* visibility: hidden; */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.freelancers__category_all {
+  padding: 20px;
+  font-size: 16px !important;
+}
+
+.freelancers__work-type {
+  color: #46c277;
+}
+
+.freelancers__type {
+  padding: 20px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.freelancers__types {
+  background-color: #F3FCF6;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-weight: 600;
+}
+
+.freelancers__types select {
+  cursor: pointer;
+  width: 180px;
+  height: 36px;
+  line-height: 33px;
+  border: 2px solid #d9d9d9;
+  border-radius: 3px;
+}
+
+.freelancers__types select:hover {
+  border: 2px solid #000;
+}
+
+.freelancers__types ul {
+  list-style : none;
+}
+
+.freelancers__types li {
+  position: relative;
+}
+
+.freelancers__types input {
+  position: absolute;
+}
+
+.freelancers__main {
+}
+
+.freelancers__title {
+  margin: 0px 0px 20px 0px;
+  font-weight: 400;
+  font-size: 24px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.freelancers__search {
+  background: #fff;
+  width: 100%;
+  margin: 0px 0px 10px 0px;
+  border: 2px solid #e1e1e1;
+  max-height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.freelancers__search input {
+  width: 80%;
+  height: 36px;
+  border: 2px solid #e1e1e1;
+  border-radius: 3px;
+  font-size: 14px;
+  padding: 0px 10px;
+}
+
+.freelancers__search button {
+  margin: 0px 0px 0px 0px;
+  max-height: 36px;
+}
+
+.freelancers__found {
+  margin: 0px 0px 10px 0px;
+  font-size: 13px;
+  color: #888;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.freelancers__results {
+}
+
+.freelancers__freelancer {
+  background: #fff;
+  margin: 0px 0px 13px 0px;
+  font-size: 13px;
+  font-family: 'Open Sans', sans-serif;
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.freelancer {
+}
+
+.freelancer__info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+}
+
+.freelancer__nr {
+  font-weight: 600;
+  margin: 0px 20px 0px 0px;
+}
+
+.freelancer__img img{
+  max-width: 40px; 
+  max-height: 40px;
+  border-radius: 50%;
+  margin: 0px 20px 0px 0px;
+}
+
+.freelancer__text {
+}
+
+.freelancer__header {
+  display: flex;
+  align-items: center;
+}
+
+.freelancer__name {
+  font-weight: 600;
+  margin: 0px 10px 0px 0px;
+  color: #46c277;
+}
+
+.freelancer__name:hover {
+  color: #000;
+}
+
+.freelancer__verified {
+  
+}
+
+.freelancer__body {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+}
+
+.freelancer__lessons {
+
+}
+
+.freelancer__work-type {
+  color: #777;
+  display: flex;
+}
+
+.freelancer__choose {
+  display: flex;
+  flex-direction: column;
+}
+
+.freelancer__rating {
+  display: flex;
+  align-items: center;
+  margin: 0px 0px 25px 0px;
+  justify-content: center;
+}
+
+.freelancer__starts {
+  margin: 0px 15px 0px 0px;
+}
+
+.freelancer__rating-nr {
+  color: #46c277;
+  text-decoration: dashed underline;
+  margin: 0px 0px 3px 0px;
+}
+
+.freelancer__choose-this {
+  font-weight: 600;
+}
+
+.freelancer__choose-this a{
+  color: #46c277;
+}
+
+.freelancer__choose-this a:hover{
+  color: #000;
+}
+</style>
+
+<div class="freelancers">
+  <div class="freelancers__sidebar">
+    <form class="freelancers__work-category" method="GET">
+      <ul class="freelancers__categories">
+        <li class="freelancers__category_all">Toate categoriile</li>
+        {{ freelancers_filter.form.work_category }}
+      </ul>
+    </form>
+    <div class="freelancers__work-type">
+      <div class="freelancers__type">Tipul de lucru</div>
+      <form class="freelancers__types" method="GET">
+        <select name="work_type" onChange="this.form.submit();">
+          {% for field in freelancers_filter.form.work_type %}
+          <option value="">{{ field }}</option>
+          {% endfor %}
+        </select>
+      </form>
+    </div>
+  </div>
+  <div class="freelancers__main">
+    <div class="freelancers__title">Top autorii</div>
+    <form class="freelancers__search" method="get">
+      {{ freelancers_filter.form.first_name }}
+      <button class="btn">Găsește autor</button>
+    </form>
+    <div class="freelancers__found">S-au găsit 21798 autorii</div>
+    <div class="freelancers__results">
+      {% for freelancer in freelancers %}
+      <div class="freelancers__freelancer freelancer">
+        <div class="freelancer__info">
+          <div class="freelancer__nr">{{ forloop.counter }}</div>
+          <a href="{% url 'freelancer_page' freelancer.id  %}" class="freelancer__img">
+            <img src="{% static 'images/' freelancer.id %}{{ freelancer.profile_pic }}" alt="user">
+          </a>
+          <div class="freelancer__text">
+            <div class="freelancer__header">
+              <a href="{% url 'freelancer_page' freelancer.id  %}" class="freelancer__name">{{ freelancer.first_name }} {{ freelancer.last_name }}</a>
+              <div class="freelancer__verified">
+                <svg id="verified-icon" viewBox="0 0 27 25" style="width: 30px; height:30px; fill:#F5BD50;">
+                  <path d="M 13.5 22.5 L 10.21 24.28 C 9.72 24.54 9.13 24.35 8.9 23.86 L 7.31 20.54 L 3.57 20.09 C 3.02 20.02 2.67 19.53 2.77 18.99 L 3.49 15.4 L 0.74 12.89 C 0.33 12.52 0.33 11.92 0.74 11.55 L 3.49 9.04 L 2.77 5.45 C 2.67 4.91 3.01 4.42 3.57 4.35 L 7.31 3.9 L 8.9 0.58 C 9.14 0.09 9.73 -0.1 10.21 0.16 L 13.5 1.94 L 16.79 0.16 C 17.28 -0.1 17.87 0.09 18.1 0.58 L 19.69 3.9 L 23.43 4.35 C 23.98 4.42 24.33 4.91 24.23 5.45 L 23.51 9.04 L 26.26 11.55 C 26.67 11.92 26.67 12.53 26.26 12.89 L 23.51 15.4 L 24.23 18.99 C 24.33 19.53 23.99 20.02 23.43 20.09 L 19.69 20.54 L 18.1 23.86 C 17.86 24.36 17.27 24.54 16.79 24.28 L 13.5 22.5 Z M 13.5 22.5"></path>
+                  <path fill="#ffffff" fill-rule="evenodd" d="M 16.16 9.28 L 12.39 13.02 L 10.95 11.6 C 10.45 11.11 9.65 11.11 9.15 11.6 C 8.65 12.1 8.65 12.9 9.15 13.39 L 11.49 15.71 C 11.73 15.96 12.06 16.08 12.39 16.08 C 12.71 16.08 13.04 15.95 13.29 15.71 L 17.96 11.07 C 18.46 10.58 18.46 9.78 17.96 9.28 C 17.46 8.79 16.66 8.79 16.16 9.28 L 16.16 9.28 Z M 16.16 9.28"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="freelancer__body">
+              <span class="freelancer__lessons">
+                {% for lessons in freelancer.lessons.all %}
+                <span>{{ lessons }},</span> 
+                {% endfor %}
+              </span>
+              <div class="freelancer__work-type">
+              {% for work in freelancer.work_type.all %}
+                <span>{{ work }},</span> 
+              {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="freelancer__choose">
+          <div class="freelancer__rating">
+            <div class="freelancer__starts">
+              <img src="{% static 'images/star.png' %}" alt="star">
+              <img src="{% static 'images/star.png' %}" alt="star">
+              <img src="{% static 'images/star.png' %}" alt="star">
+              <img src="{% static 'images/star.png' %}" alt="star">
+              <img src="{% static 'images/star.png' %}" alt="star">
+            </div>
+            <div class="freelancer__rating-nr">5.0</div>
+          </div>
+          <form class="freelancer__choose-this">
+            <a href="">Alege autorul</a>
+          </form>
+        </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const workCategories = document.querySelectorAll('.freelancers__categories  li  label  input')
+  const workCategoriesForm = document.querySelector('.freelancers__work-category')
+  for (let i = 0; i < workCategories.length; i++) {
+    workCategories[i].addEventListener('change', function () {
+      workCategoriesForm.submit()
+    })
+  }
+
+  const nullOption = document.querySelectorAll('.freelancers__types select option')
+  for (let i = 0; i < nullOption.length; i++) {
+    nullOption[1].value = '---------'
+    if (nullOption[i].value == '') {
+      nullOption[i].style.display = 'none'
+    }
+  }
+</script>
+{% endblock %}

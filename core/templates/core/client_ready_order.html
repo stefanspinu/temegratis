@@ -1,0 +1,185 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <style>
+    .ready-order {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 3px;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    .ready-order__block {
+      display: flex;
+      flex-direction: column;
+      margin: 0px 0px 20px 0px;
+    }
+
+    .ready-order__block span {
+      font-weight: 600;
+      margin: 0px 0px 10px 0px;
+    }
+
+    .ready-order__block p {
+      max-width: 100%;
+    }
+
+    .ready-order__block button {
+      margin: 0px 0px 0px 0px;
+    }
+
+    .ready-order__block a {
+      max-width: 180px;
+    }
+
+    .ready-order__review {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ready-order__review input[type=text] {
+      max-width: 600px;
+      margin: 30px 0px 30px 0px;
+      border-radius: 3px;
+      border: 2px solid #d9d9d9;
+      padding: 10px 12px;
+      outline: none;
+      line-height: calc(20/14);
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    .ready-order___send-review {
+      margin: 30px 0px 30px 0px;
+    }
+
+    .ready-order__review-title, .ready-order__pay {
+      font-weight: 600;
+    }
+
+    .ready-order__pay {
+      margin: 0px 0px 30px 0px;
+      color: #46c277;
+    }
+  </style>
+
+  {% if accepted_order.paied %}
+  <div class="ready-order">
+    <div class="ready-order__info">
+      <div class="ready-order__block">
+        <span>Descripția</span>
+        <p>{{ accepted_order.description }}</p>
+      </div>
+      <div class="ready-order__block">
+        <span>Filurile date de freelancer</span>
+        {% if accepted_order.files %}
+        <a href="{% static 'images/' %}{{ accepted_order.files }}">
+          <button class="btn">Deschide fișierul</button>
+        </a>
+        {% else %}
+        -
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+      <form action="" method="POST" class="ready-order__review">
+        <span class="ready-order__review-title">Trimiteți o recenzie</span>
+        {% csrf_token %}
+        {{ form.comment }}
+        <span class="star-rating star-5">
+          <input type="radio" name="rating" value="1" id="first-star"><i></i>
+          <input type="radio" name="rating" value="2" id="second-star"><i></i>
+          <input type="radio" name="rating" value="3" id="third-star"><i></i>
+          <input type="radio" name="rating" value="4" id="fourth-star"><i></i>
+          <input type="radio" name="rating" value="5" id="fifth-star"><i></i>
+        </span>
+        <button type="submit" class="btn ready-order___send-review">Trimite recenzia</button>
+        {% if accepted_order.paied %}
+        <p class="ready-order__pay" style="display: none;">Plătește pentru a vedea</p>
+        {% else %}
+        <p class="ready-order__pay">Plătește pentru a vedea</p>
+        {% endif %}
+        <div id="paypal-button-container"></div>
+      </form>
+  </div>
+  
+
+
+    <script src="https://www.paypal.com/sdk/js?client-id=AfIcEAfup_ET6Jw6O9oh5v2Xx7YVOz2HN_qvk2HqvzRO7eLuiXvRFK4YtAp4A7Zf6scqcI1fWxuLYwWp&currency=USD"></script>
+
+<script>
+    function getCookie(name) {
+    let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+
+    const acceptedOrderId = '{{ accepted_order.id }}'
+    const acceptedOrderPrice = '{{ accepted_order.order.price }}'
+
+    function completedOrder() {
+      const url = "{% url 'payment_completed' %}"
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+          'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({
+          'acceptedOrderId': acceptedOrderId
+        })
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        window.location.href = "{% url 'client_ready_order' accepted_order.id %}"
+      })
+    }
+
+    // Render the PayPal button into #paypal-button-container
+    paypal.Buttons({
+
+      style: {
+        shape:  'pill',
+      },
+
+        // Set up the transaction
+        createOrder: function(data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: acceptedOrderPrice
+                    }
+                }]
+            });
+        },
+
+        // Finalize the transaction
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+                // Show a success message to the buyer
+                completedOrder()
+                alert('Transaction completed by ' + details.payer.name.given_name + '!');
+            });
+        }
+
+
+    }).render('#paypal-button-container');
+</script>
+    
+{% endblock %}
+

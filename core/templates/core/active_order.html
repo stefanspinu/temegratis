@@ -1,0 +1,80 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<span class="active-order__title">{{ order.title }}</span>
+<form action="" method="POST" enctype="multipart/form-data" class="active-order__form">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <div class="active-order__fake-input">
+    <div class="active-order__upload-img">
+      <img src="{% static 'images/upload.png' %}" alt="upload">
+    </div>
+    <div class="active-order__upload-text">Adaugă fișier</div>
+  </div>
+  <button class="btn" type="submit">Trimite</button>
+</form>
+
+<style>
+  .active-order__title {
+    font-size: 18px;
+    font-weight: bold;
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  .active-order__form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin: 20px 0px 0px 0px;
+  }
+
+  .active-order__form p {
+    margin: 0px 0px 20px 0px;
+  }
+
+  .active-order__form textarea {
+    border: 2px solid #DEDEDE;
+    resize: none;
+    font-size: 14px;
+    padding: 10px;
+    margin: 0px 0px 0px 0px;
+  }
+
+  .active-order__form input[type="file"] {
+    height: 40px;
+    width: 220px;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+  }
+
+  .active-order__fake-input {
+    height: 40px;
+    width: 220px;
+    border-radius: 3px;
+    background: #ebaafc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: 'Open Sans', sans-serif;
+    position: absolute;
+    bottom: 80px;
+    left: 0;
+    cursor: pointer;
+  }
+
+  .active-order__upload-img {
+    margin: 0px 10px 0px 0px;
+  }
+
+  .btn {
+    width: 220px;
+  }
+</style>
+{% endblock %}

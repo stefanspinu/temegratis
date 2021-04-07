@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="content__wrapper">
+  <main class="main">
+    <div class="main__block">
+      <span class="main__title">Bine ați venit la temegratis!</span>
+      <div class="main__text">
+        <p>Temegratis este un schimb online între autori și clienți pentru scrierea de teme pe acasă, rezumate, diplome și alte lucrări educaționale. Găsiți singuri comenzi și lucrați direct cu clientul.</p>
+        <p class="main__important">Urmați 4 pași simpli pentru a începe să lucrați la serviciul temegratis.</p>
+        <button class="main__button">Începe</button>
+      </div>
+    </div>
+    <div class="main__img">
+      <picture><source srcset="{% static '/images/message.webp' %}" type="image/webp"><img src="{% static '/images/message.png' %}" alt=""></picture>
+    </div>
+  </main>
+  {% if request.user.freelancer %}
+  {% include 'core/sidebar_left.html' %}
+  {% else %}
+  {% include 'core/sidebar_left_client.html' %}
+  {% endif %}
+{% include 'core/footer.html' %}
+</div>
+{% endblock %}
+    

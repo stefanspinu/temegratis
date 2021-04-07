@@ -1,0 +1,51 @@
+{% load static %}
+<div class="sidebar">
+  <div class="sidebar__user">
+    {% if request.user.client %}
+  <picture><source srcset="{% static 'images/' %}{{  request.user.client.profile_pic }}" type="image/webp"><img src="{% static 'images/' %}{{  request.user.client.profile_pic }}" alt="" class="sidebar__avatar"></picture>
+    {% elif request.user.freelancer %}
+  <picture><source srcset="{% static 'images/' %}{{  request.user.freelancer.profile_pic }}" type="image/webp"><img src="{% static 'images/' %}{{  request.user.freelancer.profile_pic }}" alt="" class="sidebar__avatar"></picture>
+    {% else %}
+  <picture><source srcset="{% static 'images/default-user.jpg' %}" type="image/webp"><img src="{% static 'images/default-user.jpg' %}" alt="" class="sidebar__avatar"></picture>
+    {% endif %}
+  </div>
+  <div class="sidebar__notifications notifications-sidebar">
+    <span class="notifications-sidebar__title">Notificații</span>
+    <ul class="notifications-sidebar__list">
+      <li><a href="{% url 'orders' %}" class="notifications-sidebar__link">Licitaţie</a></li>
+      <li><a href="{% url 'active_orders' request.user.freelancer.id %}" class="notifications-sidebar__link">Invitații de muncă</a></li>
+      <li><a href="{% url 'active_orders' request.user.freelancer.id %}" class="notifications-sidebar__link">Comenzi în lucru</a></li>
+      <li><a href="#" class="notifications-sidebar__link">De la administrație</a></li>
+    </ul>
+  </div>
+  <div class="sidebar__user-info">
+    <div class="sidebar__info">
+      <span class="sidebar__text">Comenzile finalizate</span>
+      <span class="sidebar__text">{{ finished }}</span>
+    </div>
+    <div class="sidebar__info">
+      <span class="sidebar__text">Acum în lucru</span>
+      <span class="sidebar__text">{{ working_at }}</span>
+    </div>
+  </div>
+  <div class="sidebar__user-info">
+    <div class="sidebar__info">
+      <span class="sidebar__text">Clienți</span>
+      <span class="sidebar__text">{{ total_clients }}</span>
+    </div>
+    <div class="sidebar__info">
+      <span class="sidebar__text">Permanenți</span>
+      <span class="sidebar__text">{{ permament_clients }}</span>
+    </div>
+  </div>
+  <div class="sidebar__user-info" style="border-bottom: none;">
+    <div class="sidebar__info">
+      <span class="sidebar__text">
+        <svg style="margin: 0px 5px 0px 0px;" id="view" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+          <image id="view-2" data-name="view" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAbwAAAG8B8aLcQwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADeSURBVDiNxdO9SgNBFAXg77pLAmm230q7FPY2tnkPn2GfIqWPYGMZLJdgkUYEm7yCj5BaEMbmRpb4V0zhwIWZwzlnzp2fKKWoGWdV6r8MIqKNiPZXzmkLEXGBG1zjKuEXPOGulPL6bYKIaCJiwB4d1rjMWie2j4ghIppPh0ywwA7PWKLHiLesMbFlcnZYHNPP8YjtBBxxn6I+5+Nks21q5rDBA2ZJ6HLXvpRyTNgn1uV6lppN9TXWt1B9iJM+Gww44BYrnGetEjskpznqqh/SF4MTsxZKKe8/cv79N34AC3h4odMTJGQAAAAASUVORK5CYII="/>
+        </svg>
+        Vizualizări</span>
+      <span class="sidebar__text">{{ freelancer.views }}</span>
+    </div>
+  </div>
+</div>

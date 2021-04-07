@@ -1,0 +1,68 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+  {% for message in messages %}
+	  <p>{{ message }} </p>
+	{% endfor %}
+  <div class="main-orders__block">
+    <div class="main-orders__title">Toate comenzile</div>
+    <table class="main-orders__table">
+      <tr>
+        <th>Id</th>
+        <th>Titlu</th>
+        <th>Descrierea</th>
+        <th class="centered">Termen limită</th>
+        <th class="centered">Nr minim pag</th>
+        <th class="centered">Nr maxim pag</th>
+        <th class="centered">Fișierul</th>
+        <th class="centered">Suma</th>
+        <th class="centered">Către comandă</th>
+      </tr>
+      {% for order in orders %}
+      <tr>
+        {% if forloop.counter < 10 %}
+        <td>0{{ forloop.counter }}</td>
+        {% else %}
+        <td>{{ forloop.counter }}</td>
+        {% endif %}
+        <td>{{ order.title }}</td>
+        <td class="order-description">{{ order.description }}</td>
+        <td class="centered">{{ order.limit_date }}</td>
+        <td class="centered">{{ order.min_size }}</td>
+        <td class="centered">{{ order.max_size }}</td>
+        <td class="centered">{{ order.price }}Lei</td>
+        <td class="centered">
+          <a class="file" href="{% static 'images/' request.user.id %}/{{ order.files }}">
+            Fișier
+          </a>
+      </td>
+        <td class="centered">
+          <a href="{% url 'active_order' order.id %}">
+            <button class="btn" style="margin: 0px">Apăsați pentru a îndeplini comanda</button>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <style>
+    .centered {
+      text-align: center !important;
+    }
+
+    .file {
+      color: #46c277;
+    }
+
+    .file:hover {
+      color: #000;
+    }
+
+    .order-description {
+      max-width: 200px;
+      overflow-y: visible;
+    }
+  </style>
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="my-orders">
+  <div class="my-orders__sidebar sidebar-left">
+    <div class="sidebar-left__title">Comenzi</div>
+    <a href="{% url 'my_orders' %}" class="sidebar-left__block active">
+      <div class="sidebar-left__text">Toate activiățile</div>
+      <span class="sidebar-left__nr">{{ all_orders.count }}</span>
+    </a>
+    <!-- <a href="#" class="sidebar-left__block">
+      <div class="sidebar-left__text">
+        <picture><source srcset="{% static 'images/star.webp' %}" type="image/webp"><img src="{% static 'images/star.webp' %}" alt="star" class="sidebar-left__star"></picture>
+        <p>Favorite</p>
+      </div>
+      <span class="sidebar-left__nr">1000</span>
+    </a> -->
+    <a href="{% url 'active_orders' request.user.freelancer.id %}" class="sidebar-left__block">
+      <div class="sidebar-left__text">Comenzi active</div>
+      <span class="sidebar-left__nr">{{ all_orders_active.count }}</span>
+    </a>
+  </div>
+  <div class="my-orders__main main-orders">
+    <div class="main-orders__wrapper">
+      <div class="main-orders__block">
+        <div class="main-orders__title">Comenzile recente</div>
+        <table class="main-orders__table">
+          <tr>
+            <th>Id</th>
+            <th>Client</th>
+            <th>Finalizat</th>
+            <th>Timp</th>
+            <th>Plătit</th>
+            <th>Suma</th>
+          </tr>
+          {% for order in recent_orders %}
+          <tr>
+            {% if forloop.counter < 10 %}
+            <td>0{{ forloop.counter }}</td>
+            {% else %}
+            <td>{{ forloop.counter }}</td>
+            {% endif %}
+            <td>{{ order.order.client.first_name }} {{ order.order.client.last_name }}</td>
+            {% if order.completed %}
+            <td class="finished">Da</td>
+            {% else %}
+            <td>Nu</td>
+            {% endif %}
+            {% if order.delivered_date >= order.order.limit_date %}
+            <td>Depășit de termenul limită</td>
+            {% elif order.delivered_date <= order.order.limit_date %}
+            <td>În termen</td>
+            {% else %}
+            <td>În proces</td>
+            {% endif %}
+            {% if order.paied %}
+            <td class="paied">Da</td>
+            {% else %}
+            <td>Nu</td>
+            {% endif %}
+            <td>{{ order.order.price }}Lei</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      <div class="main-orders__block">
+        <div class="main-orders__title">Toate comenzile</div>
+        <table class="main-orders__table">
+          <tr>
+            <th>Id</th>
+            <th>Client</th>
+            <th>Finalizat</th>
+            <th>Timp</th>
+            <th>Plătit</th>
+            <th>Suma</th>
+          </tr>
+          {% for order in all_orders %}
+          <tr>
+            {% if forloop.counter < 10 %}
+            <td>0{{ forloop.counter }}</td>
+            {% else %}
+            <td>{{ forloop.counter }}</td>
+            {% endif %}
+            <td>{{ order.order.client.first_name }} {{ order.order.client.last_name }}</td>
+            {% if order.completed %}
+            <td class="finished">Da</td>
+            {% else %}
+            <td>Nu</td>
+            {% endif %}
+            {% if order.delivered_date >= order.order.limit_date %}
+            <td>Depășit de termenul limită</td>
+            {% elif order.delivered_date <= order.order.limit_date %}
+            <td>În termen</td>
+            {% else %}
+            <td>În proces</td>
+            {% endif %}
+            {% if order.paied %}
+            <td class="paied">Da</td>
+            {% else %}
+            <td>Nu</td>
+            {% endif %}
+            <td>{{ order.order.price }}Lei</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="my-orders__sidebar sidebar-rigth">
+<div class="sidebar-rigth__title">Comenzi recomandate</div>
+<div class="sidebar-rigth__block">
+<div class="sidebar-rigth__block-header">
+  <span class="sidebar-rigth__id"># 6193450</span>
+  <div class="sidebar-rigth__cross">
+    <span></span>
+  </div>
+</div>
+<div class="sidebar-rigth__block-body">
+  <div class="sidebar-rigth__description">
+    <p>Problemă de geometrie, teorema lui pitagora</p>
+  </div>
+  <a href="#" class="sidebar-rigth__task">
+    Ex. 5 pag 209 manual clasa a 9a
+  </a>
+  <div class="sidebar-rigth__info">
+    <span class="sidebar-rigth__info-name">Preț:</span>
+    <span class="sidebar-rigth__info-nr">300 Lei</span>
+  </div>
+  <div class="sidebar-rigth__info">
+    <span class="sidebar-rigth__info-name">Termen limită:</span>
+    <span class="sidebar-rigth__info-nr">17.02.2021</span>
+  </div>
+</div>
+</div>
+<div class="sidebar-rigth__block premium">
+<div class="sidebar-rigth__block-header">
+  <span class="sidebar-rigth__id"># 6193450</span>
+  <div class="sidebar-rigth__cross">
+    <span></span>
+  </div>
+</div>
+<div class="sidebar-rigth__block-body">
+  <div class="sidebar-rigth__description">
+    <p>Problemă de geometrie, teorema lui pitagora</p>
+  </div>
+  <a href="#" class="sidebar-rigth__task">
+    Ex. 5 pag 209 manual clasa a 9a
+  </a>
+  <div class="sidebar-rigth__info">
+    <span class="sidebar-rigth__info-name">Preț:</span>
+    <span class="sidebar-rigth__info-nr">300 Lei</span>
+  </div>
+  <div class="sidebar-rigth__info">
+    <span class="sidebar-rigth__info-name">Termen limită:</span>
+    <span class="sidebar-rigth__info-nr">17.02.2021</span>
+  </div>
+</div>
+</div>
+<div class="sidebar-rigth__block">
+<div class="sidebar-rigth__block-header">
+  <span class="sidebar-rigth__id"># 6193450</span>
+  <div class="sidebar-rigth__cross">
+    <span></span>
+  </div>
+</div>
+<div class="sidebar-rigth__block-body">
+  <div class="sidebar-rigth__description">
+    <p>Problemă de geometrie, teorema lui pitagora</p>
+  </div>
+  <a href="#" class="sidebar-rigth__task">
+    Ex. 5 pag 209 manual clasa a 9a
+  </a>
+  <div class="sidebar-rigth__info">
+    <span class="sidebar-rigth__info-name">Preț:</span>
+    <span class="sidebar-rigth__info-nr">300 Lei</span>
+  </div>
+  <div class="sidebar-rigth__info">
+    <span class="sidebar-rigth__info-name">Termen limită:</span>
+    <span class="sidebar-rigth__info-nr">17.02.2021</span>
+  </div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,1541 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+  <style>
+    #favourite {
+      width: 40px;
+      height: 40px;
+      /* border-color: #f6be4e; */
+      position: absolute;
+      right: 32px;
+      opacity: 0;
+      z-index: 2;
+    }
+
+    .block-orders__fav-form:hover .block-orders__favorite,  .block-orders__fav-form.active .block-orders__favorite {
+      border-color: #f6be4e;
+    }
+
+    .orders {
+  display: grid;
+  grid-template-columns: 70% 30%;
+  grid-template-areas: 'main sidebar'
+  'main -';
+}
+
+.orders__main {
+  grid-area: main;
+}
+
+.orders__title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: baseline;
+      -ms-flex-align: baseline;
+          align-items: baseline;
+}
+
+.orders__search-result {
+  color: #333;
+  font-size: 24px;
+  margin: 0px 16px 0px 0px;
+}
+
+.orders__subtitle {
+  font-size: 13px;
+  color: #8d8d8d;
+}
+
+.orders__results {
+  margin: 20px 0px 0px 0px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.orders__block {
+  position: relative;
+  display: grid;
+  grid-template-columns: 70% 30%;
+  grid-template-areas: 'main-content request'
+ 'descprition descprition';
+  background-color: #fff;
+  min-width: 875px;
+  border-radius: 2px;
+  margin: 0px 0px 20px 0px;
+}
+
+.orders__block_p {
+  border: 2px solid #f6be4e;
+}
+
+.orders__block_p .block-orders__premium {
+  display: block;
+}
+
+.orders__sidebar {
+  grid-area: sidebar;
+}
+
+.block-orders__content {
+  grid-area: main-content;
+  padding: 16px 32px;
+}
+
+.block-orders__date {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-transform: capitalize;
+  font-size: 14px;
+  margin: 0px 0px 10px 0px;
+}
+
+.block-orders__placed-date {
+  width: 170px;
+  color: #9b9b9b;
+}
+
+.block-orders__expier-date {
+  color: #333;
+}
+
+.block-orders__expier-date svg {
+  margin: 0px 5px 0px 0px;
+}
+
+.block-orders__name {
+  margin: 0px 0px 14px 0px;
+}
+
+.block-orders__title {
+  color: #46c277;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: calc(25/18);
+  padding: 2px 0px;
+}
+
+.block-orders__title:hover {
+  color: #000;
+}
+
+.block-orders__subtitle {
+  font-size: 13px;
+  color: #333;
+}
+
+.block-orders__files {
+  margin: 0px 0px 26px 0px;
+}
+
+.block-orders__download {
+  padding: 0px 10px 0px 0px;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  color: #46c277;
+  cursor: pointer;
+}
+
+.block-orders__download svg {
+  margin: 0px 5px 0px 0px;
+}
+
+.block-orders__download:hover {
+  color: #333;
+}
+
+.block-orders__preview {
+  color: #46c277;
+}
+
+.block-orders__preview:hover {
+  color: #333;
+}
+
+.block-orders__user {
+  display: none;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.block-orders__img {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.block-orders__img img {
+  width: 40px;
+  height: 40px;
+  margin: 0px 8px 0px 0px;
+}
+
+.block-orders__username {
+  font-size: 12px;
+  margin: 0px 24px 0px 0px;
+  font-weight: 600;
+}
+
+.block-orders__connected {
+  font-size: 12px;
+  color: #8d8d8d;
+  position: relative;
+}
+
+.block-orders__connected::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: -15px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #a2c679;
+}
+
+.block-orders__size {
+  font-size: 12px;
+  color: #8d8d8d;
+}
+
+.block-orders__size b {
+  color: #000;
+}
+
+.block-orders__request {
+  grid-area: request;
+  padding: 16px 32px;
+  position: relative;
+}
+
+.block-orders__premium {
+  position: absolute;
+  top: 0;
+  right: 167px;
+  color: #fff;
+  background-color: #f6be4e;
+  padding: 3px 8px;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: calc(14/10);
+  text-transform: uppercase;
+  display: none;
+}
+
+.block-orders__cross {
+  position: absolute;
+  z-index: 1;
+  top: 0px;
+  right: 0px;
+  width: 30px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.block-orders__cross:hover span::before {
+  background-color: #333;
+}
+
+.block-orders__cross:hover span::after {
+  background-color: #333;
+}
+
+.block-orders__cross span::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  right: 5px;
+  width: 15px;
+  height: 2px;
+  background-color: #cac8c8;
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+
+.block-orders__cross span::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  right: 5px;
+  width: 15px;
+  height: 2px;
+  background-color: #cac8c8;
+  -webkit-transform: rotate(-45deg);
+      -ms-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+}
+
+.block-orders__cross.active span::before {
+  -webkit-transform: rotate(90deg);
+      -ms-transform: rotate(90deg);
+          transform: rotate(90deg);
+}
+
+.block-orders__cross.active span::after {
+  -webkit-transform: rotate(180deg);
+      -ms-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+
+.block-orders__total-requests {
+  font-size: 14px;
+  color: #333;
+  margin: 10px 0px 0px 0px;
+}
+
+.block-orders__budget {
+  font-size: 22px;
+  line-height: calc(25/22);
+}
+
+.block-orders__buttons {
+  margin: 10px 0px 21px 0px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.block-orders__button {
+  outline: none;
+  border: 1px solid #e1e1e1;
+  border-radius: 2px;
+  background-color: transparent;
+  cursor: pointer;
+  -webkit-transition: background-color .2s,border-color .2s;
+  -o-transition: background-color .2s,border-color .2s;
+  transition: background-color .2s,border-color .2s;
+}
+
+.block-orders__show {
+  width: 150px;
+  height: 40px;
+  margin: 0px 16px 0px 0px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  font-size: 14px;
+  color: #46c277;
+  -webkit-transition: all 0.2s;
+  -o-transition: all 0.2s;
+  transition: all 0.2s;
+}
+
+.block-orders__show svg {
+  margin: 0px 11px 2px -20px;
+  -webkit-transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+          transform: rotate(0deg);
+  -webkit-transition: all 0.2s;
+  -o-transition: all 0.2s;
+  transition: all 0.2s;
+}
+
+.block-orders__show.active svg {
+  -webkit-transform: rotate(180deg);
+      -ms-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+
+.block-orders__show:hover {
+  background-color: #e3fcec;
+}
+
+.block-orders__favorite {
+  width: 40px;
+  height: 40px;
+}
+
+.block-orders__favorite:hover {
+  border-color: #f6be4e;
+}
+
+.block-orders__favorite .active {
+  border-color: #f6be4e;
+} 
+
+.block-orders__main-btn {
+  width: 200px;
+  height: 40px;
+  outline: none;
+  border-radius: 2px;
+  font-size: 14px;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 600;
+  border: none;
+  -webkit-transition: background-color 0.12s linear 0s, color 0.12s linear 0s, border-color 0.12s linear 0s;
+  -o-transition: background-color 0.12s linear 0s, color 0.12s linear 0s, border-color 0.12s linear 0s;
+  transition: background-color 0.12s linear 0s, color 0.12s linear 0s, border-color 0.12s linear 0s;
+  background: #D7A9E3FF;
+  cursor: pointer;
+}
+
+.block-orders__main-btn:hover {
+  background-color: #e589fc;
+}
+
+.block-orders__make-request {
+  display: none;
+}
+
+.block-orders__descprition {
+  grid-area: descprition;
+  padding: 16px 32px;
+  border-top: 1px solid #cac8c8;
+  display: none;
+}
+
+.block-orders__desc {
+  color: #333;
+  margin: 0px 0px 16px 0px;
+  font-size: 14px;
+}
+
+.block-orders__info {
+  overflow-y: auto;
+  max-height: 495px;
+  color: #cac8c8;
+  font-size: 14px;
+}
+
+.sidebar-orders {
+  background: #fff;
+  padding: 16px 0px 16px 0px;
+  max-height: 100%;
+  max-width: 290px;
+  font-family: 'Roboto', sans-serif;
+  border: 2px solid #e1e1e1;
+  margin: 0px 0px 0px 24px;
+}
+
+.sidebar-orders__head-text {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 0px 16px;
+}
+
+.sidebar-orders__title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.sidebar-orders__reset {
+  font-size: 13px;
+  color: #4786c8;
+  cursor: pointer;
+}
+
+.sidebar-orders__search {
+  border: 1px solid #cac8c8;
+  margin: 16px 16px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.sidebar-orders__search input {
+  width: 80%;
+  border-radius: 2px;
+  color: #333333;
+  outline: none;
+  border: none;
+  font-size: 14px;
+  padding: 11px 0px 11px 12px;
+  line-height: calc(16/14);
+}
+
+.sidebar-orders__search button {
+  background: transparent;
+  outline: none;
+  border: none;
+  margin: 0px 0px 0px 20px;
+}
+
+.filters__default-filter {
+  padding: 0px 16px 16px 16px;
+  border-top: 1px solid #cac8c8;
+}
+
+.filters__default-filter.deactivated {
+  display: none;
+}
+
+.filters__show-more {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  font-size: 14px;
+  line-height: calc(20/14);
+  color: #4786c8;
+  position: relative;
+  padding: 0px 0px 16px 0px;
+  cursor: pointer;
+}
+
+.filters__show-more::before {
+  content: '';
+  position: absolute;
+  top: 9.2px;
+  left: 16px;
+  width: 25%;
+  height: 1px;
+  background-color: #cac8c8;
+}
+
+.filters__show-more::after {
+  content: '';
+  position: absolute;
+  top: 9.2px;
+  right: 16px;
+  width: 25%;
+  height: 1px;
+  background-color: #cac8c8;
+}
+
+.filters__show-more.deactivated {
+  display: none;
+}
+
+.filters__apply {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 20px 16px 16px 16px;
+}
+
+.filters__apply button {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  outline: none;
+  cursor: pointer;
+  height: 42px;
+  font-size: 14px;
+  line-height: calc(16/14);
+  font-weight: 600;
+  -webkit-transition: background-color 0.12s linear 0s, color 0.12s linear 0s, border-color 0.12s linear 0s;
+  -o-transition: background-color 0.12s linear 0s, color 0.12s linear 0s, border-color 0.12s linear 0s;
+  transition: background-color 0.12s linear 0s, color 0.12s linear 0s, border-color 0.12s linear 0s;
+  border: 1px solid #D7A9E3FF;
+  color: #D7A9E3FF;
+  text-transform: uppercase;
+  background-color: transparent;
+}
+
+.filters__apply button:hover {
+  border: 1px solid #d189e4;
+  color: #d189e4;
+}
+
+.filter__head {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  border-top: 1px solid #cac8c8;
+  padding: 12px 16px;
+  -webkit-transition: all 0.2s;
+  -o-transition: all 0.2s;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.filter__head.not-active:hover {
+  background-color: #e3fcec;
+}
+
+.filter__icon {
+  margin: 2px 0px 0px 8px;
+}
+
+.filter__title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.filter__title .filter__arrow {
+  -webkit-transition: all 0.2s;
+  -o-transition: all 0.2s;
+  transition: all 0.2s;
+}
+
+.filter__title.active .filter__arrow {
+  -webkit-transform: rotate(180deg);
+      -ms-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+
+.filter__name {
+  margin: 0px 0px 0px 16px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.filter__total {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.filter__find {
+  padding: 0px 16px 8px 16px;
+}
+
+.filter__find.deactivated {
+  display: none;
+}
+
+.filter__search {
+  padding: 11px 12px;
+  color: #333333;
+  outline: none;
+  font-size: 14px;
+  line-height: calc(16/14);
+  border-radius: 2px;
+  border: 1px solid #cac8c8;
+  width: 100%;
+  background-color: #fff;
+  -webkit-transition: all 0.12s;
+  -o-transition: all 0.12s;
+  transition: all 0.12s;
+  margin: 0px 0px 10px 0px;
+}
+
+.filter__search:hover {
+  border: 1px solid #333;
+}
+
+.filter__checkbox {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  padding: 0px 0px 0px 25px;
+  font-size: 14px;
+}
+
+.filter__checkbox:nth-child(2) {
+  margin: 10px 0px 0px 0px;
+}
+
+.filter__checkbox input {
+  position: absolute;
+  left: 0px;
+  top: 0;
+  height: 20px;
+  width: 220px;
+  z-index: 2;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* .filter__checkbox input:checked ~ .filter__checkmark {
+  background-color: #42aaff;
+}
+
+.filter__checkbox input:checked ~ .filter__checkmark::after {
+  display: block;
+}
+
+.filter__checkbox:hover input ~ .filter__checkmark {
+  border: 1px solid #1e68a5;
+}
+
+.filter__checkbox:hover input:checked ~ .filter__checkmark {
+  background-color: #1e68a5;
+}
+
+.filter__checkmark {
+  position: absolute;
+  top: 1px;
+  left: 0;
+  height: 16px;
+  width: 16px;
+  border: 1px solid #cac8c8;
+  border-radius: 3px;
+}
+
+.filter__checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 4px;
+  top: 2px;
+  width: 4px;
+  height: 7px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  -webkit-transform: rotate(40deg);
+      -ms-transform: rotate(40deg);
+          transform: rotate(40deg);
+} */
+
+.filter__results {
+  padding: 0px 16px 16px 16px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.filter__results.deactivated {
+  display: none;
+}
+
+.filter__label {
+  font-size: 10px;
+  line-height: calc(20/10);
+  color: #8d8d8d;
+  margin: 0px 0px 5px 0px;
+}
+
+.filter__list {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+/* .filter__li {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  padding: 0px 0px 0px 25px;
+  font-size: 14px;
+  font-size: 14px;
+  line-height: calc(20/14);
+  margin: 0px 0px 8px 0px;
+}
+
+.filter__li input {
+  position: absolute;
+  left: 0px;
+  top: 0;
+  height: 20px;
+  width: 220px;
+  z-index: 2;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.filter__li input:checked ~ .filter__checkmark {
+  background-color: #42aaff;
+}
+
+.filter__li input:checked ~ .filter__checkmark::after {
+  display: block;
+}
+
+.filter__li:hover input ~ .filter__checkmark {
+  border: 1px solid #1e68a5;
+}
+
+.filter__li:hover input:checked ~ .filter__checkmark {
+  background-color: #1e68a5;
+} */
+
+.filter__block-interval.deactivated {
+  display: none;
+}
+
+.filter__interval {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 16px 16px 16px 16px;
+}
+
+.filter__interval.deactivated {
+  display: none;
+}
+
+.filter__contractual {
+  margin: 0px 16px 16px 17px;
+}
+
+.filter__contractual.deactivated {
+  display: none;
+}
+
+/* .filter__contractual .filter__checkmark {
+  position: absolute;
+  top: 0px;
+  left: 16px;
+  height: 16px;
+  width: 16px;
+  border: 1px solid #cac8c8;
+  border-radius: 3px;
+}
+
+.filter__contractual .filter__checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 4px;
+  top: 2px;
+  width: 4px;
+  height: 7px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  -webkit-transform: rotate(40deg);
+      -ms-transform: rotate(40deg);
+          transform: rotate(40deg);
+} */
+
+.filter__quantity {
+  position: relative;
+  border: 1px solid #cac8c8;
+}
+
+.filter__quantity span {
+  position: absolute;
+  bottom: 11px;
+  left: 10px;
+  font-size: 13px;
+  color: #cac8c8;
+}
+
+.filter__quantity input {
+  height: 38px;
+  width: 110px;
+  padding: 11px 12px 11px 10px;
+  outline: none;
+  border: none;
+  font-size: 14px;
+  color: #333333;
+}
+
+.filter__quantity input::-webkit-input-placeholder {
+  color: #cac8c8;
+}
+
+.filter__quantity input::-moz-placeholder {
+  color: #cac8c8;
+}
+
+.filter__quantity input:-ms-input-placeholder {
+  color: #cac8c8;
+}
+
+.filter__quantity input::-ms-input-placeholder {
+  color: #cac8c8;
+}
+
+.filter__quantity input::placeholder {
+  color: #cac8c8;
+}
+
+.filter__line {
+  width: 10px;
+  height: 10px;
+  border-bottom: 1px solid #000;
+  margin: 0px 0px 5px 0px;
+}
+
+.default-filter__li {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  padding: 0px 0px 0px 25px;
+  font-size: 14px;
+  font-size: 14px;
+  line-height: calc(20/14);
+  margin: 0px 0px 8px 0px;
+}
+
+.default-filter__li input {
+  position: absolute;
+  left: 0px;
+  top: 0;
+  height: 20px;
+  width: 220px;
+  z-index: 2;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* .default-filter__li input:checked ~ .filter__checkmark {
+  background-color: #42aaff;
+}
+
+.default-filter__li input:checked ~ .filter__checkmark::after {
+  display: block;
+}
+
+.default-filter__li:hover input ~ .filter__checkmark {
+  border: 1px solid #1e68a5;
+}
+
+.default-filter__li:hover input:checked ~ .filter__checkmark {
+  background-color: #1e68a5;
+} */
+
+.default-filter__list {
+  padding: 16px 0px 0px 0px;
+}
+  </style>
+
+    <div class="orders">
+      <div class="orders__main">
+        {% for message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+        {% if accepted_order %}
+        <p>Aveți o comandă gata de făcut!</p>
+        {% else %}
+        <p style="display: none;">Aveți o comandă gata de făcut!</p>
+        {% endif %}
+          <div class="orders__title">
+            <span class="orders__search-result">S-au găsit {{ orders.count }} comenzi</span>
+            <span class="orders__subtitle">Total comenzi: {{ all_orders }}</span>
+          </div>
+          <div class="orders__page">
+              <div class="orders__wrapper">
+
+                <div class="orders__results">
+                  {% for order in orders_premium %}
+                  <div class="orders__block {% if order.premium %} orders__block_p {% endif %} block-orders">
+                    <div class="block-orders__cross">
+                    <span></span>
+                    </div>
+                    <div class="block-orders__content">
+                    <div class="block-orders__date">
+                      <span class="block-orders__placed-date">{{ order.date_created }}</span>
+                      <span class="block-orders__expier-date">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+                          <image id="calendar" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACLSURBVDiN7dO9CQJBFEXhb38K0FwQrMNEVpuwB0NjrcYabECsQk0sQ1mTF4zIjrgmBh54MMx998AEwzOrmC5e8gJjbDHCJO7PHYI0v2JT4Ig9DljGwq5DkOZTLOCOMoIhBpknpHmFWx3ldaaUo6oTc2/ab7rl+508f8GvCC5oenTn4tM1cWg/nBNmD4fBH/Kfvt2TAAAAAElFTkSuQmCC"/>
+                        </svg>                  
+                        {{ order.limit_date }}
+                      </span>
+                    </div>
+                    <div class="block-orders__name">
+                      <a href="#" class="block-orders__title">{{ order.title }}</a>
+                      <p class="block-orders__subtitle">{{ order.short_description }}</p>
+                    </div>
+                    <div class="block-orders__files">
+                      <button class="block-orders__download">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+                          <image id="attachment" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAnNCSVQICFXsRgQAAAAJcEhZcwAABDUAAAQ1Ae+lzsMAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAA70lEQVQoU2XOOy+DURzA4UfqEtLByiQsrfoCdoMqnToSg5hshMSlBlNdym4yWSVieBcx1GIhManW1NV3OIa2+vZtznJOnt855y9ILhN2vHtRNBQMclpN1ZQFz9YHAmk1h539rLdEEOfAmKaRJB/FzttuYi9IqzkOlNwGgTU/5kzG+SRQ0jATWNWUE9nqcTnGBQ05kUrQ5dMYr2iYFzkP2sGjsz7+lhW56HyuqCVlscN5dVmRy//hVZQDd/KBZXUZkasu94Jd9/Z8yYhUexxQ0JIyasO+aZHrOLeHfPBkybhNH/23u8GwA59+vSomOfgD1ty3myIhMk8AAAAASUVORK5CYII="/>
+                        </svg>
+                        Failuri ({% if order.files %}Da{% else %}Nu{% endif %})
+                      </button>
+                      {% if order.files %}
+                      <a href="{% static 'images/' request.user.id %}{{ order.files }}" class="block-orders__preview">vizualizare</a>
+                      {% endif %}
+                    </div>
+                    <div class="block-orders__user">
+                      <div class="block-orders__img">
+                        <picture><source srcset="{% static 'images/' request.user.id %}{{ order.client.profile_pic }}" type="image/webp"><img src="{% static 'images/' request.user.id %}{{ order.client.profile_pic }}" alt=""></picture>
+                        <span class="block-orders__username">{{ order.client.first_name }}  {{ order.client.last_name }}</span>
+                        <div class="block-orders__connected">Online</div>
+                      </div>
+                      <div class="block-orders__size">Mărime: <b>{{ order.min_size }} - {{ order.max_size }} pag.</b></div>
+                    </div>
+                    </div>
+                    <div class="block-orders__request">
+                    <div class="block-orders__premium">
+                      premium
+                    </div>
+                    {% if order.freelancers.count == 1 %}
+                    <div class="block-orders__total-requests">{{ order.freelancers.count }} cerere</div>
+                    {% elif order.freelancers.count > 1 %}
+                    <div class="block-orders__total-requests">{{ order.freelancers.count }} cereri</div>
+                    {% else %}
+                    <div class="block-orders__total-requests" style="display: none;">{{ order.freelancers.count }} cereri</div>
+                    {% endif %}
+                    <div class="block-orders__budget">Buget: {{ order.price }}Lei</div>
+                    <div class="block-orders__buttons">
+                      <button class="block-orders__button block-orders__show">
+                        <svg style="padding-top: 3px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+                          <image id="arrow-down-sign-to-navigate_1_" data-name="arrow-down-sign-to-navigate (1)" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAfQAAAH0Bx0gPAAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACeSURBVDiN1ZPBDcIwDEWfMwt7sAQLMEWvnaRRC0dG4tY9+FyMZKgTIZULkSwl9n9PudgkseeUXfQvBAYcgQNQJT2+gswKcAbuACsgYAKKJHrlv56cWQEGfwioPYnDNeSH12AMzTmTODyH3CiJGIiSJUocXj7hN0EiuThY/L6BN4JEcvVK4VSQSJpwU5BIUlgS1tsFMzsBSLo1M/+/TE92ZfjD1tAH3gAAAABJRU5ErkJggg=="/>
+                        </svg>                  
+                        Detalii</button>
+                        <form action="" method="POST" class="block-orders__fav-form">
+                          {% csrf_token %}
+                          <button class="block-orders__button block-orders__favorite">
+                            <input style="display: none;" type="text" name="order_id" value="{{ order.id }}">
+                            <input style="display: none;" type="text" name="fav" value="1">
+                            <div class="block-orders__star">
+                              <picture><source srcset="{% static 'images/star.webp' %}" type="image/webp"><img src="{% static 'images/star.png' %}" alt=""></picture>
+                            </div>
+                          </button>
+                          <input type="checkbox" name="favourite" id="favourite">
+                          <!-- <button name="add_fav" class="block-orders__button block-orders__favorite">
+                            <input style="display: none;" type="text" name="order_id" value="{{ order.id }}">
+                            <input style="display: none;" type="text" name="fav" value="2">
+                            <div class="block-orders__star">
+                              <picture><source srcset="{% static 'images/star.webp' %}" type="image/webp"><img src="{% static 'images/star.png' %}" alt=""></picture>
+                            </div>
+                          </button> -->
+                        </form>
+                    </div>
+                    <form class="block-orders__make-request" method="POST">
+                      {% csrf_token %}
+                      <input style="display: none;" type="text" name="order_id" value="{{ order.id }}">
+                      <button class="block-orders__main-btn" name="put_request">Plasează cerere</button>
+                    </form>
+                    </div>
+                    <div class="block-orders__descprition">
+                    <div class="block-orders__desc">Descripție</div>
+                    <div class="block-orders__info">{{ order.description }}</div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                  {% for order in page_obj %}
+                  <div class="orders__block {% if order.premium %} orders__block_p {% endif %} block-orders">
+                    <div class="block-orders__cross">
+                    <span></span>
+                    </div>
+                    <div class="block-orders__content">
+                    <div class="block-orders__date">
+                      <span class="block-orders__placed-date">{{ order.date_created }}</span>
+                      <span class="block-orders__expier-date">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+                          <image id="calendar" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACLSURBVDiN7dO9CQJBFEXhb38K0FwQrMNEVpuwB0NjrcYabECsQk0sQ1mTF4zIjrgmBh54MMx998AEwzOrmC5e8gJjbDHCJO7PHYI0v2JT4Ig9DljGwq5DkOZTLOCOMoIhBpknpHmFWx3ldaaUo6oTc2/ab7rl+508f8GvCC5oenTn4tM1cWg/nBNmD4fBH/Kfvt2TAAAAAElFTkSuQmCC"/>
+                        </svg>                  
+                        {{ order.limit_date }}
+                      </span>
+                    </div>
+                    <div class="block-orders__name">
+                      <a href="#" class="block-orders__title">{{ order.title }}</a>
+                      <p class="block-orders__subtitle">{{ order.short_description }}</p>
+                    </div>
+                    <div class="block-orders__files">
+                      <button class="block-orders__download">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+                          <image id="attachment" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAnNCSVQICFXsRgQAAAAJcEhZcwAABDUAAAQ1Ae+lzsMAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAA70lEQVQoU2XOOy+DURzA4UfqEtLByiQsrfoCdoMqnToSg5hshMSlBlNdym4yWSVieBcx1GIhManW1NV3OIa2+vZtznJOnt855y9ILhN2vHtRNBQMclpN1ZQFz9YHAmk1h539rLdEEOfAmKaRJB/FzttuYi9IqzkOlNwGgTU/5kzG+SRQ0jATWNWUE9nqcTnGBQ05kUrQ5dMYr2iYFzkP2sGjsz7+lhW56HyuqCVlscN5dVmRy//hVZQDd/KBZXUZkasu94Jd9/Z8yYhUexxQ0JIyasO+aZHrOLeHfPBkybhNH/23u8GwA59+vSomOfgD1ty3myIhMk8AAAAASUVORK5CYII="/>
+                        </svg>
+                        Failuri ({% if order.files %}Da{% else %}Nu{% endif %})
+                      </button>
+                      {% if order.files %}
+                      <a href="{% static 'images/' request.user.id %}{{ order.files }}" class="block-orders__preview">vizualizare</a>
+                      {% endif %}
+                    </div>
+                    <div class="block-orders__user">
+                      <div class="block-orders__img">
+                        <picture><source srcset="{% static 'images/' request.user.id %}{{ order.client.profile_pic }}" type="image/webp"><img src="{% static 'images/' request.user.id %}{{ order.client.profile_pic }}" alt=""></picture>
+                        <span class="block-orders__username">{{ order.client.first_name }}  {{ order.client.last_name }}</span>
+                        <div class="block-orders__connected">Online</div>
+                      </div>
+                      <div class="block-orders__size">Mărime: <b>{{ order.min_size }} - {{ order.max_size }} pag.</b></div>
+                    </div>
+                    </div>
+                    <div class="block-orders__request">
+                    <div class="block-orders__premium">
+                      premium
+                    </div>
+                    {% if order.freelancers.count == 1 %}
+                    <div class="block-orders__total-requests">{{ order.freelancers.count }} cerere</div>
+                    {% elif order.freelancers.count > 1 %}
+                    <div class="block-orders__total-requests">{{ order.freelancers.count }} cereri</div>
+                    {% else %}
+                    <div class="block-orders__total-requests" style="display: none;">{{ order.freelancers.count }} cereri</div>
+                    {% endif %}
+                    <div class="block-orders__budget">Buget: {{ order.price }}Lei</div>
+                    <div class="block-orders__buttons">
+                      <button class="block-orders__button block-orders__show">
+                        <svg style="padding-top: 3px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+                          <image id="arrow-down-sign-to-navigate_1_" data-name="arrow-down-sign-to-navigate (1)" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAfQAAAH0Bx0gPAAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACeSURBVDiN1ZPBDcIwDEWfMwt7sAQLMEWvnaRRC0dG4tY9+FyMZKgTIZULkSwl9n9PudgkseeUXfQvBAYcgQNQJT2+gswKcAbuACsgYAKKJHrlv56cWQEGfwioPYnDNeSH12AMzTmTODyH3CiJGIiSJUocXj7hN0EiuThY/L6BN4JEcvVK4VSQSJpwU5BIUlgS1tsFMzsBSLo1M/+/TE92ZfjD1tAH3gAAAABJRU5ErkJggg=="/>
+                        </svg>                  
+                        Detalii</button>
+                        <form action="" method="POST" class="block-orders__fav-form">
+                          {% csrf_token %}
+                          <button class="block-orders__button block-orders__favorite">
+                            <input style="display: none;" type="text" name="order_id" value="{{ order.id }}">
+                            <input style="display: none;" type="text" name="fav" value="1">
+                            <div class="block-orders__star">
+                              <picture><source srcset="{% static 'images/star.webp' %}" type="image/webp"><img src="{% static 'images/star.png' %}" alt=""></picture>
+                            </div>
+                          </button>
+                          <input type="checkbox" name="favourite" id="favourite">
+                          <!-- <button name="add_fav" class="block-orders__button block-orders__favorite">
+                            <input style="display: none;" type="text" name="order_id" value="{{ order.id }}">
+                            <input style="display: none;" type="text" name="fav" value="2">
+                            <div class="block-orders__star">
+                              <picture><source srcset="{% static 'images/star.webp' %}" type="image/webp"><img src="{% static 'images/star.png' %}" alt=""></picture>
+                            </div>
+                          </button> -->
+                        </form>
+                    </div>
+                    <form class="block-orders__make-request" method="POST">
+                      {% csrf_token %}
+                      <input style="display: none;" type="text" name="order_id" value="{{ order.id }}">
+                      <button class="block-orders__main-btn" name="put_request">Plasează cerere</button>
+                    </form>
+                    </div>
+                    <div class="block-orders__descprition">
+                    <div class="block-orders__desc">Descripție</div>
+                    <div class="block-orders__info">{{ order.description }}</div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="orders__pagination">
+                <span class="step-links">
+                  <!-- {% if page_obj.has_previous %}
+                      <a href="?page=1">&laquo; first</a>
+                      <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                  {% endif %} -->
+          
+                  <span class="current">
+                    {% for i in page_obj.paginator %}
+                    <a href="?page={{ i.number }}">{{ i.number }}</a>
+                    {% endfor %}
+                  </span>
+          
+                  <!-- {% if page_obj.has_next %}
+                      <a href="?page={{ page_obj.next_page_number }}">next</a>
+                      <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                  {% endif %} -->
+              </span>
+              </div>
+          </div>
+      </div>
+
+      
+      <form class="orders__sidebar sidebar-orders" method="GET">
+        <div class="sidebar-orders__head-text">
+          <div class="sidebar-orders__title">Filtru de comenzi</div>
+          <div class="sidebar-orders__reset">Resetați</div>
+        </div>
+        <div class="sidebar-orders__search">
+          {{ orders_filter.form.title }}
+          <button>
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+              <image id="loupe16" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAbwAAAG8B8aLcQwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEoSURBVDiNldK/LoNhGAXw3yMG6WyoiLgBEoOli3QUC4PJTTC4A6Oh3azGLjaxCJFIpZNBCEsXERMJF8Br+N42n09TnORJ3uQ55zz/Xiklg0ATh7jFOy6xj3qZV44JiIhaRBzgHLM4wi6usYG7iNgyCrnyAd6wWa2AKbTwieaIvGZO/hBXiB30UasaHOJ0nDgTp/GB1eoOlnE1cr7vo77gPvOHmMAcnn4zyHjEfNXgBgt/NFjCQ9Wgh7WImBqnjIgGZtCt5up4RWvMAmuK+Y9/5DJhS3HKDqYr4kYWJ+yNNCh9477iVLc4wXMWHmMvv3fKBpODOVJKFxGxiBXFqeZxhm5KqZf38IpWREgptQfCfwV2yp0MO/grUkrtiJA7+YzBf/4vImIb61+ORyh//I2xTgAAAABJRU5ErkJggg=="/>
+            </svg>              
+          </button>
+        </div>
+        <div class="sidebar-orders__filters filters">
+          <div class="filters__filter filter">
+            <div class="filter__block">
+              <div class="filter__head not-active">
+                <div class="filter__title">
+                  <div class="filter__arrow">
+                    <svg style="padding-top: 5px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+                      <image id="arrow-down-sign-to-navigate_1_" data-name="arrow-down-sign-to-navigate (1)" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAfQAAAH0Bx0gPAAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACeSURBVDiN1ZPBDcIwDEWfMwt7sAQLMEWvnaRRC0dG4tY9+FyMZKgTIZULkSwl9n9PudgkseeUXfQvBAYcgQNQJT2+gswKcAbuACsgYAKKJHrlv56cWQEGfwioPYnDNeSH12AMzTmTODyH3CiJGIiSJUocXj7hN0EiuThY/L6BN4JEcvVK4VSQSJpwU5BIUlgS1tsFMzsBSLo1M/+/TE92ZfjD1tAH3gAAAABJRU5ErkJggg=="/>
+                    </svg> 
+                  </div>
+                  <span class="filter__name">Tipul</span>
+                </div>
+                <div class="filter__total">
+                  <span class="filter__nr">{{ work_types.count }}</span>
+                    <div class="filter__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+                      <image id="edit" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAcQAAAHEBHD+AdwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEESURBVDiNldO/LuxRFMXxz5KJRqFSKCU6IUIp0XoGkXgBDUFHoldQ6XQ6iUqlcm8iOh5AoUGp9C83dysQMn4zmVnJKU72/q61T7KPqtLPwRL+4BAjqSpJJjHrWw9VdaZNSVaxginMYznYwRguf/TeVdVpAzyHexTWcQFXPYy9imO0Pu97uMbmAAbaR+2QvFhV/36Uzqtqt284yR5U1Zpu6b3AHQ2SrPQCNxokCTYwhFY32FdDm2bw18eynCS5wf8muNMTFvCECUzjuQlOspVktGmCJ7zgDFtV9dyUjHEM/zKoqv0OQKO67kGvBo9JRvqBkgz6+D+3LWzjKMlwHx5vOKiq13cd46KPLEvGfQAAAABJRU5ErkJggg=="/>
+                    </svg>
+                  </div>              
+                </div>
+              </div>
+              <div class="filter__find deactivated">
+                <!-- <input type="text" class="filter__search" placeholder="Căutare după tip"> -->
+                <label class="settings-checkbox" id="work_type_select_all">Alege tot
+                  <input type="checkbox">
+                  <span class="settings-checkmark"></span>
+                </label>
+                <div class="filter__label">
+                  Toate tipurile
+                </div>
+              </div>
+              <div class="filter__results deactivated">
+                <div class="filter__list" id="orders_work_type">
+                  {{ orders_filter.form.work_types }}
+                </div>
+              </div>
+            </div>
+            <div class="filter__block">
+              <div class="filter__head not-active">
+                <div class="filter__title">
+                  <div class="filter__arrow">
+                    <svg style="padding-top: 5px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+                      <image id="arrow-down-sign-to-navigate_1_" data-name="arrow-down-sign-to-navigate (1)" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAfQAAAH0Bx0gPAAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACeSURBVDiN1ZPBDcIwDEWfMwt7sAQLMEWvnaRRC0dG4tY9+FyMZKgTIZULkSwl9n9PudgkseeUXfQvBAYcgQNQJT2+gswKcAbuACsgYAKKJHrlv56cWQEGfwioPYnDNeSH12AMzTmTODyH3CiJGIiSJUocXj7hN0EiuThY/L6BN4JEcvVK4VSQSJpwU5BIUlgS1tsFMzsBSLo1M/+/TE92ZfjD1tAH3gAAAABJRU5ErkJggg=="/>
+                    </svg> 
+                  </div>
+                  <span class="filter__name">Obiectul</span>
+                </div>
+                <div class="filter__total">
+                  <span class="filter__nr">{{ lessons.count }}</span>
+                    <div class="filter__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+                      <image id="book" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAChSURBVDiN7dM9DgEBEAXgz0ai0REKCaITN1BxKiVXoNQ4gUqiU6gcQC3R63QaFLsbS/ZHz0ummMl7LzPJG17o4IA7HgW1jkWlhMEKZwQRaSYdI0wxFpFjdLGPxF8jKKb8DX7AoPzR9zEUJnSSoemhFjfJKB/RwFb4D5cMgwquwji/bdDEAgPU0c7ZfJd2wgYtzFHNEcMpbViLTG6K33kZi57G7iT2VRo1igAAAABJRU5ErkJggg=="/>
+                    </svg> 
+                  </div>                              
+                </div>
+              </div>
+              <div class="filter__find deactivated">
+                <!-- <input type="text" class="filter__search" placeholder="Căutare după tip"> -->
+                <label class="settings-checkbox" id="lessons_select_all">Alege tot
+                  <input type="checkbox">
+                  <span class="settings-checkmark"></span>
+                </label>
+                <div class="filter__label">
+                  Toate obiectele
+                </div>
+              </div>
+              <div class="filter__results deactivated">
+                
+                <div class="filter__list" id="lessons">
+                  {{ orders_filter.form.lessons }}
+                </div>
+              </div>
+            </div>
+            <div class="filters__default-filter default-filter">
+              <div class="default-filter__list">
+                <label class="settings-checkbox">Comanda conține mai puțin de 3 oferte
+                  <input type="checkbox" checked="checked" id="less-than-3">
+                  <span class="settings-checkmark"></span>
+                </label>
+                <label class="settings-checkbox">Nu-mi arăta comenzile mele
+                  <input type="checkbox" checked="checked" id="not-my-orders">
+                  <span class="settings-checkmark"></span>
+                </label>
+                <label class="settings-checkbox">Nu sunt oferte
+                  <input type="checkbox" checked="checked" id="no-requests">
+                  <span class="settings-checkmark"></span>
+                </label>
+              </div>
+            </div>
+            <div class=" filter__block filter__block-interval">
+              <div class="filter__head not-active">
+                <div class="filter__title">
+                  <div class="filter__arrow">
+                    <svg style="padding-top: 5px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+                      <image id="arrow-down-sign-to-navigate_1_" data-name="arrow-down-sign-to-navigate (1)" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAfQAAAH0Bx0gPAAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACeSURBVDiN1ZPBDcIwDEWfMwt7sAQLMEWvnaRRC0dG4tY9+FyMZKgTIZULkSwl9n9PudgkseeUXfQvBAYcgQNQJT2+gswKcAbuACsgYAKKJHrlv56cWQEGfwioPYnDNeSH12AMzTmTODyH3CiJGIiSJUocXj7hN0EiuThY/L6BN4JEcvVK4VSQSJpwU5BIUlgS1tsFMzsBSLo1M/+/TE92ZfjD1tAH3gAAAABJRU5ErkJggg=="/>
+                    </svg> 
+                  </div>
+                  <span class="filter__name">Buget</span>
+                </div>
+                <div class="filter__total">
+                  <div class="filter__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+                       <image id="money" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAGCSURBVDiNldO7a1VBEMfxz9wHomiCdsFOQUQEK8V0CjYpbWwsxTa1/4E2olVUhNiKRXqxEHymEBS1EXxAlCAIIQkSkxgzFmcunMA1xIFhZ2f3/PY7s3tkpoHjAK5ivJ3fziMzRcRIZi5HxASe4yTG8RUPMvOXf1hgL27jfeUWMYt3GMMF9DCTmR+HCZzFWma+gIgYxWkcRxeb+ID1zHw4TOAcnmXm6lDEiA6Oleh+3MnM5bbAtcL+H1vNzJuqtkVcxyT6VfsbTOAtlnAef3AjMzci4lSb4IqmkVOZOR8RJwr3ZSEfzszpiDiCS9UT6GCmU5OfmTlf8RncwxR+YKTyd/ENT/AYnzHdq8XdrfqWsA9fCntw4u+aHy3yFawMBF5FxCTm8AkX8UhzxU9bAmvVt07F6z0c0jyc74Ub1bxdtWk0Ig7W6dHyDrKHW7V5zlZrv4uNVtwtCtjsZeZrO7CI6GqueU+J9NHtbfvVVlso9H6NXSxE/cY7IRjDZU25NE29/xdu66StwKud2QAAAABJRU5ErkJggg=="/>
+                    </svg>   
+                  </div>                                            
+                </div>
+              </div>
+              <div class="filter__interval deactivated">
+                <div class="filter__quantity">
+                  {{ orders_filter.form.price__gt }}
+                </div>
+                <div class="filter__line"></div>
+                <div class="filter__quantity">
+                  {{ orders_filter.form.price__lt }}
+                </div>
+              </div>
+              <label class="settings-checkbox filter__contractual deactivated">Inclusiv contractuale
+                <input type="checkbox" checked="checked">
+                <span class="settings-checkmark"></span>
+              </label>
+            </div>
+            <div class="filter__block filter__block-interval ">
+              <div class="filter__head not-active">
+                <div class="filter__title">
+                  <div class="filter__arrow">
+                    <svg style="padding-top: 5px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+                      <image id="arrow-down-sign-to-navigate_1_" data-name="arrow-down-sign-to-navigate (1)" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAfQAAAH0Bx0gPAAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACeSURBVDiN1ZPBDcIwDEWfMwt7sAQLMEWvnaRRC0dG4tY9+FyMZKgTIZULkSwl9n9PudgkseeUXfQvBAYcgQNQJT2+gswKcAbuACsgYAKKJHrlv56cWQEGfwioPYnDNeSH12AMzTmTODyH3CiJGIiSJUocXj7hN0EiuThY/L6BN4JEcvVK4VSQSJpwU5BIUlgS1tsFMzsBSLo1M/+/TE92ZfjD1tAH3gAAAABJRU5ErkJggg=="/>
+                    </svg> 
+                  </div> 
+                  <span class="filter__name">Data finalizării</span>
+                </div>
+                <div class="filter__total">
+                  <div class="filter__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+                      <image id="calendar16" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACLSURBVDiN7dO9CQJBFEXhb38K0FwQrMNEVpuwB0NjrcYabECsQk0sQ1mTF4zIjrgmBh54MMx998AEwzOrmC5e8gJjbDHCJO7PHYI0v2JT4Ig9DljGwq5DkOZTLOCOMoIhBpknpHmFWx3ldaaUo6oTc2/ab7rl+508f8GvCC5oenTn4tM1cWg/nBNmD4fBH/Kfvt2TAAAAAElFTkSuQmCC"/>
+                    </svg>    
+                  </div>                                                             
+                </div>
+              </div>
+              <div class="filter__interval deactivated">
+                <div class="filter__quantity">
+                  <!-- <span>de la</span> -->
+                  {{ orders_filter.form.date_created }}
+                </div>
+                <div class="filter__line"></div>
+                <div class="filter__quantity">
+                  <!-- <span>până la</span> -->
+                  {{ orders_filter.form.limit_date }}
+                </div>
+              </div>
+            </div>
+            <div class="filters__default-filter default-filter deactivated">
+              <div class="default-filter__list">
+                <label class="settings-checkbox">Client este online
+                  <input type="checkbox" checked="checked">
+                  <span class="settings-checkmark"></span>
+                </label>
+                <label class="settings-checkbox">Comanda a fost plătită
+                  <input type="checkbox" checked="checked">
+                  <span class="settings-checkmark"></span>
+                </label>
+              </div>
+            </div>
+            <div class="filters__apply">
+              <button type="submit">Aplică</button>  
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <script type="module" src="{% static 'js/utils.js' %}">
+    </script>
+
+<script>
+  const priceGt = document.querySelector('#id_price__gt')
+  const priceLt = document.querySelector('#id_price__lt')
+  priceGt.placeholder = '0 lei'
+  priceLt.placeholder = '10000 lei'
+
+  const dateCreated = document.querySelector('#id_date_created')
+  const dateLimit = document.querySelector('#id_limit_date')
+  dateCreated.placeholder = '1/1/2021'
+  dateLimit.placeholder = '12/25/2021'
+
+  const favourites = document.getElementsByName('favourite')
+  const favouriteBtns = document.querySelectorAll('.block-orders__fav-form') 
+  for (let i = 0; i < favourites.length; i++) {
+    favourites[i].addEventListener('click', function () {
+      favouriteBtns[i].classList.toggle('active')
+    })
+  }
+  //Show details on orders page
+  function showDetails() {
+    const detailsButtons = document.querySelectorAll('.block-orders__show')
+    const users = document.querySelectorAll('.block-orders__user')
+    const makeRequests = document.querySelectorAll('.block-orders__make-request')
+    const descriptions = document.querySelectorAll('.block-orders__descprition')
+    for (let i = 0; i <= detailsButtons.length - 1; i++) {
+      detailsButtons[i].addEventListener("click", function() {
+      
+        detailsButtons[i].classList.toggle('active')
+        if ((users[i].style.display === "flex") && (makeRequests[i].style.display === "block") && (descriptions[i].style.display === "block")) {
+          users[i].style.display = "none";
+          makeRequests[i].style.display = "none";
+          descriptions[i].style.display = "none";
+        } else {
+          users[i].style.display = "flex";
+          makeRequests[i].style.display = "block";
+          descriptions[i].style.display = "block";
+        }
+      });
+    }
+  }
+  showDetails()
+
+//Close work on orders page
+function closeOrder() {
+  const crosses = document.querySelectorAll('.block-orders__cross')
+  for (let i = 0; i < crosses.length; i++) {
+    crosses[i].addEventListener('click', function() {
+      const date = document.querySelectorAll('.block-orders__date')
+      const files = document.querySelectorAll('.block-orders__files')
+      const details = document.querySelectorAll('.block-orders__request') 
+      const content = document.querySelectorAll('.block-orders__content') 
+      crosses[i].classList.toggle('active')
+      users[i].style.display = "none";
+      makeRequests[i].style.display = "none";
+      descriptions[i].style.display = "none";
+      if ((date[i].style.display === "flex") && (files[i].style.display === "block") && (details[i].style.display === "block")) {
+        date[i].style.display = "none";
+        files[i].style.display = "none";
+        details[i].style.display = "none";
+        content[i].style.padding = "8px 16px 0px 16px"
+      } else {
+        date[i].style.display = "flex";
+        files[i].style.display = "block";
+        details[i].style.display = "block";
+      }
+    })
+  }
+}
+closeOrder()
+
+//Filter on orders page
+function ordersFilter() {
+  const filterHeader = document.querySelectorAll('.filter__head')
+  const intervalResults = document.querySelectorAll('.filter__interval')
+  const sidebar = document.querySelector('.orders__sidebar')
+
+  for(let i = 0; i < filterHeader.length; i++) {
+    const header = filterHeader[i]
+    const filterArrow = document.querySelectorAll('.filter__title')
+    const search = document.querySelectorAll('.filter__find')
+    const results = document.querySelectorAll('.filter__results')
+    header.addEventListener('click', function () {
+      try {
+        header.classList.toggle('not-active')
+        filterArrow[i].classList.toggle('active')
+        search[i].classList.toggle('deactivated')
+        results[i].classList.toggle('deactivated')
+      } catch (error) {
+        console.log(error);
+        console.log('There is not search[i] and results[i] after i =>  2');
+      }
+    })
+  }
+
+  for (let i = 0; i < intervalResults.length; i++) {
+    const filterHeader = document.querySelectorAll('.filter__head')
+    const bugetResults = document.querySelector('.filter__contractual')
+
+    for (let j = 0; j < filterHeader.length; j++) {
+      firstHeader =  filterHeader[2]
+      secondHeader =  filterHeader[3]
+    }
+    firstHeader.addEventListener('click', function () {
+      firstHeader.classList.toggle('not-active')
+      intervalResults[0].classList.toggle('deactivated')
+      bugetResults.classList.toggle('deactivated')
+    })
+    secondHeader.addEventListener('click', function () {
+      secondHeader.classList.toggle('not-active')
+      intervalResults[1].classList.toggle('deactivated')
+    })
+    break
+  }
+}
+ordersFilter()
+
+const selectAllCheckboxes = (allCheckbox, checkboxes, checkedCheckboxes) => {
+  let checkedCounter = 0
+  
+  for (let i = 0; i < checkedCheckboxes.length; i++) {
+    checkedCounter++
+  }
+  
+  for (let i = 0; i < checkboxes.length; i++) {
+    checkboxes[i].addEventListener('click', function() {
+      if (checkboxes[i].checked) {
+        checkedCounter++
+      } else {
+        checkedCounter--
+      }
+
+      if (checkedCounter == checkboxes.length) {
+        allCheckbox.checked = true
+      } else {
+        allCheckbox.checked = false
+      }
+    })
+  }
+
+  allCheckbox.addEventListener('click', function () {
+    for (let i = 0; i < checkboxes.length; i++) {
+      if (allCheckbox.checked) {
+        checkboxes[i].checked = true
+        checkedCounter = checkboxes.length
+      } else {
+        checkboxes[i].checked = false
+        checkedCounter = 0
+      }
+    }
+  })
+}
+
+try {
+  const lessonsSelectAll = document.querySelector('#lessons_select_all input')
+  const lessonsCheckboxes = document.querySelectorAll('#lessons ul > li > label > input')
+  const lessonsCheckboxesChecked = document.querySelectorAll('#lessons ul > li > label > input:checked')
+  selectAllCheckboxes(lessonsSelectAll, lessonsCheckboxes, lessonsCheckboxesChecked)
+} catch (error) {
+  console.log('Checkboxe not on this page');
+}
+
+try {
+  const ordersSelectAllWorkType = document.querySelector('#work_type_select_all input')
+  const ordersWorkTypeCheckboxes = document.querySelectorAll('#orders_work_type ul > li > label > input')
+  const ordersWorkTypeCheckboxesChecked = document.querySelectorAll('#orders_work_type ul > li > label > input:checked')
+  selectAllCheckboxes(ordersSelectAllWorkType, ordersWorkTypeCheckboxes, ordersWorkTypeCheckboxesChecked)
+} catch (error) {
+  console.log('Checkboxe not on this page');
+}
+
+</script>
+
+{% endblock %}
+

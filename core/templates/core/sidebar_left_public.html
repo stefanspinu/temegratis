@@ -1,0 +1,64 @@
+{% load static %}
+<div class="sidebar">
+  <div class="sidebar__user">
+    <picture><source srcset="{% static 'images/' freelancer.id %}{{  freelancer.profile_pic }}" type="image/webp"><img src="{% static 'images/' %}{{  request.user.freelancer.profile_pic }}" alt="freelancer picture" class="sidebar__avatar"></picture>
+      <div class="sidebar__name">{{ freelancer.first_name }} {{ freelancer.last_name }}</div>
+      <a href="{% url 'create_order_for_freelancer' freelancer.id %}" class="sidebar__choose">
+        <button class="btn">Închiriați autorul</button>
+      </a>
+  </div>
+  <div class="sidebar__verified">
+    <svg id="verified-icon" viewBox="0 0 27 25" style="width: 30px; height:30px; fill:#F5BD50; margin-right: 5px;">
+      <path d="M 13.5 22.5 L 10.21 24.28 C 9.72 24.54 9.13 24.35 8.9 23.86 L 7.31 20.54 L 3.57 20.09 C 3.02 20.02 2.67 19.53 2.77 18.99 L 3.49 15.4 L 0.74 12.89 C 0.33 12.52 0.33 11.92 0.74 11.55 L 3.49 9.04 L 2.77 5.45 C 2.67 4.91 3.01 4.42 3.57 4.35 L 7.31 3.9 L 8.9 0.58 C 9.14 0.09 9.73 -0.1 10.21 0.16 L 13.5 1.94 L 16.79 0.16 C 17.28 -0.1 17.87 0.09 18.1 0.58 L 19.69 3.9 L 23.43 4.35 C 23.98 4.42 24.33 4.91 24.23 5.45 L 23.51 9.04 L 26.26 11.55 C 26.67 11.92 26.67 12.53 26.26 12.89 L 23.51 15.4 L 24.23 18.99 C 24.33 19.53 23.99 20.02 23.43 20.09 L 19.69 20.54 L 18.1 23.86 C 17.86 24.36 17.27 24.54 16.79 24.28 L 13.5 22.5 Z M 13.5 22.5"></path>
+      <path fill="#ffffff" fill-rule="evenodd" d="M 16.16 9.28 L 12.39 13.02 L 10.95 11.6 C 10.45 11.11 9.65 11.11 9.15 11.6 C 8.65 12.1 8.65 12.9 9.15 13.39 L 11.49 15.71 C 11.73 15.96 12.06 16.08 12.39 16.08 C 12.71 16.08 13.04 15.95 13.29 15.71 L 17.96 11.07 C 18.46 10.58 18.46 9.78 17.96 9.28 C 17.46 8.79 16.66 8.79 16.16 9.28 L 16.16 9.28 Z M 16.16 9.28"></path>
+    </svg>
+    Autor verificat
+  </div>
+  <div class="sidebar__user-info">
+    <div class="sidebar__info">
+      <span class="sidebar__text">Comenzile finalizate</span>
+      <span class="sidebar__text">{{ finished }}</span>
+    </div>
+    <div class="sidebar__info">
+      <span class="sidebar__text">Acum în lucru</span>
+      <span class="sidebar__text">{{ working_at }}</span>
+    </div>
+  </div>
+  <div class="sidebar__parameters">
+    <span>Tipul de lucru</span>
+    <ul>
+      {% for work in freelancer.work_type.all %}
+      <li>{{ work }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="sidebar__parameters">
+    <span>Lecții</span>
+    <ul>
+      {% for lesson in freelancer.lessons.all %}
+      <li>{{ lesson }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="sidebar__user-info">
+    <div class="sidebar__info">
+      <span class="sidebar__text">Clienți</span>
+      <span class="sidebar__text">{{ total_clients }}</span>
+    </div>
+    <div class="sidebar__info">
+      <span class="sidebar__text">Permanenți</span>
+      <span class="sidebar__text">{{ permament_clients }}</span>
+    </div>
+  </div>
+  <div class="sidebar__user-info" style="border-bottom: none;">
+    <div class="sidebar__info">
+      <span class="sidebar__text">
+        <svg style="margin: 0px 5px 0px 0px;" id="view" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+          <image id="view-2" data-name="view" width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAbwAAAG8B8aLcQwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADeSURBVDiNxdO9SgNBFAXg77pLAmm230q7FPY2tnkPn2GfIqWPYGMZLJdgkUYEm7yCj5BaEMbmRpb4V0zhwIWZwzlnzp2fKKWoGWdV6r8MIqKNiPZXzmkLEXGBG1zjKuEXPOGulPL6bYKIaCJiwB4d1rjMWie2j4ghIppPh0ywwA7PWKLHiLesMbFlcnZYHNPP8YjtBBxxn6I+5+Nks21q5rDBA2ZJ6HLXvpRyTNgn1uV6lppN9TXWt1B9iJM+Gww44BYrnGetEjskpznqqh/SF4MTsxZKKe8/cv79N34AC3h4odMTJGQAAAAASUVORK5CYII="/>
+        </svg>
+        Vizualizări
+      </span>
+      <span class="sidebar__text">{{ freelancer.views }}</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static '/css/style.css' %}">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://js.stripe.com/v3/"></script> 
+  <title>temegratis</title>
+</head>
+<body>
+  {% if request.user.freelancer %}
+    {% include 'core/header.html' %}
+  {% else %}
+    {% include 'core/header_client.html' %}
+  {% endif %}
+  <div class="container">
+    <div class="space-from-header"></div>
+    {% block content %}
+    
+    {% endblock %}
+  </div>
+  {% include 'core/footer.html' %}
+  <script src="{% static '/js/script.js' %}"></script>
+</body>
+</html>

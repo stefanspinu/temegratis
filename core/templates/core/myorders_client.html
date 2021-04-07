@@ -1,0 +1,92 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="my-orders">
+  <div class="my-orders__sidebar sidebar-left_second">
+    <div class="sidebar-left__title">Comenzi</div>
+    <a href="{% url 'my_orders_client' %}" class="sidebar-left__block active">
+      <div class="sidebar-left__text">Toate</div>
+      <span class="sidebar-left__nr"></span>
+    </a>
+    <a href="{% url 'client_orders_auction' request.user.client.id %}" class="sidebar-left__block ">
+      <div class="sidebar-left__text">În aucțiune</div>
+      <span class="sidebar-left__nr"></span>
+    </a>
+    <a href="{% url 'client_orders' request.user.client.id %}" class="sidebar-left__block ">
+      <div class="sidebar-left__text">În lucru</div>
+      <span class="sidebar-left__nr"></span>
+    </a>
+  </div>
+  <div class="my-orders__main main-orders">
+    <div class="main-orders__wrapper">
+      <div class="main-orders__block">
+        <div class="main-orders__title">Toate comenzile</div>
+        <table class="main-orders__table">
+          <tr>
+            <th>Id</th>
+            <th>Titlu</th>
+            <th>Suma</th>
+          </tr>
+          {% for order in orders %}
+          <tr>
+            {% if forloop.counter < 10 %}
+            <td>0{{ forloop.counter }}</td>
+            {% else %}
+            <td>{{ forloop.counter }}</td>
+            {% endif %}
+            <td>{{ order.title }}</td>
+            <td>{{ order.price }}Lei</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      <div class="main-orders__block">
+        <div class="main-orders__title">Comenzi acceptate</div>
+        <table class="main-orders__table">
+          <tr>
+            <th>Id</th>
+            <th>Titlu</th>
+            <th>Freelancer</th>
+            <th>Finalizat</th>
+            <th>Termen</th>
+            <th>Plătit</th>
+            <th>Suma</th>
+          </tr>
+          {% for order in accepted_orders %}
+          <tr>
+            {% if forloop.counter < 10 %}
+            <td>0{{ forloop.counter }}</td>
+            {% else %}
+            <td>{{ forloop.counter }}</td>
+            {% endif %}
+            <td>{{ order.order.title }}</td>
+            {% for freelancer in order.order.freelancers.all %}
+            <td>{{ freelancer.first_name }} {{ freelancer.lastt_name }}</td>
+            {% endfor %}
+            {% if order.completed %}
+            <td class="paied">Da</td>
+            {% else %}
+            <td>Nu</td>
+            {% endif %}
+            {% if order.delivered_date >= order.order.limit_date %}
+            <td>Depășit de termenul limită</td>
+            {% elif order.delivered_date <= order.order.limit_date %}
+            <td>În termen</td>
+            {% else %}
+            <td>În proces</td>
+            {% endif %}
+            {% if order.paied %}
+            <td class="paied">Da</td>
+            {% else %}
+            <td>Nu</td>
+            {% endif %}
+            <td>{{ order.order.price }}Lei</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

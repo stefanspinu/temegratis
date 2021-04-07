@@ -1,0 +1,102 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+{% for message in messages %}
+<p>{{ message }}</p>
+{% endfor %}
+<div class="settings profile">
+  <div class="settings-settings">
+    Setări
+  </div>
+  <div class="settings-body">
+    <div class="settings-nav">
+      <ul class="settings-list">
+        {% if request.user.client %}
+        <li class="settings-link"><a href="{% url 'qualification' request.user.client.id %}">Cualificații</a></li>
+        <li class="settings-link"><a class="active" href="{% url 'personal' request.user.client.id %}">Date personale</a></li>
+        {% elif request.user.freelancer %}
+        <li class="settings-link"><a href="{% url 'qualification' request.user.freelancer.id %}">Cualificații</a></li>
+        <li class="settings-link"><a class="active" href="{% url 'personal' request.user.freelancer.id %}">Date personale</a></li>
+        {% else %}
+        <li class="settings-link"><a href="">Cualificații</a></li>
+        <li class="settings-link"><a class="active" href="">Date personale</a></li>
+        {% endif %}
+        <li class="settings-link"><a href="#">Setări de notificații</a></li>
+      </ul>
+    </div>
+    <div class="settings-info">
+      <div class="settings-block">
+        <div class="settings-title">Avatar</div>
+        <div class="profile__avatar">
+          <div class="profile__img">
+            {% if request.user.freelancer.profile_pic %}
+            <picture><source srcset="{{ request.user.freelancer.profile_pic.url }}" type="image/webp"><img src="{{ request.user.freelancer.profile_pic.url }}" alt=""></picture>
+            {% endif %}
+            </div>
+          <div class="profile__upload">
+            <form method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              {% for field in change_avatar_form.visible_fields %}
+                {{ field }}
+              {% endfor %}
+              <div class="profile__fake-input">
+                <div class="profile__upload-img">
+                  <img src="{% static 'images/upload.png' %}" alt="">
+                </div>
+                <div class="profile__upload-text">Schimbă imaginea</div>
+              </div>
+        <button class="btn" type="submit" name="change_avatar">Salvează</button>
+
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="settings-block">
+        <div class="settings-title">Informatie</div>
+        <form method="POST">
+          {% csrf_token %}
+          {{ change_name_form }}
+          <button class="btn" type="submit" name="change_name">Salvează</button>
+        </form>
+      </div>
+      <div class="settings-block">
+        <div class="settings-title">Anul nașterii</div>
+        <form method="POST" class="profile__yob">
+          {% csrf_token %}
+          <div class="profile__dates">
+          {% for field in change_date_of_birth_form.visible_fields %}
+            {{ field }}
+          {% endfor %}
+          </div>
+          <button class="btn" type="submit" name="change_date_of_birth">Salvează</button>
+        </form>
+      </div>
+      <div class="settings-block">
+        <div class="settings-title">Contacte</div>
+        <form method="POST">
+          {% csrf_token %}
+          {% for field in change_contacts_form.visible_fields %}
+            {{ field }}
+          {% endfor %}
+          <button class="btn" type="submit" name="change_contacts">Salvează</button>
+        </form>
+      </div>
+      <div class="settings-block" style="display: none;">
+        <div class="settings-title">Parolă</div>
+        <form method="POST" class="profile__password">
+          {% csrf_token %}
+          <!-- <input type="text" class="settings-input" placeholder="Parola veche">
+          <input type="text" class="settings-input" placeholder="Parola nouă"> -->
+          <div class="profile__confirm">
+          {% for field in change_password_form.visible_fields %}
+            {{ field }}
+          {% endfor %}
+            <button class="btn" type="submit" name="change_password">Salvează</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

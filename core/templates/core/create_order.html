@@ -1,0 +1,219 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  .create-order {
+  font-family: 'Roboto', sans-serif;
+}
+.create-order__page-title {
+  font-size: 2em;
+  margin: 0px 0px 0.67em 0px;
+  color: #010101;
+}
+.create-order__wrapper {
+  background: #fff;
+  padding: 20px;
+}
+.create-order__block {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  background-color: #f5f5f5;
+  font-size: 13px;
+}
+.create-order__left-block {
+}
+.left-block {
+}
+.create-order__title {
+  font-size: 16px;
+  text-transform: uppercase;
+  margin: 0px 0px 40px 0px;
+}
+.left-block__block {
+  margin: 40px 0px 0px 0px;
+  display: flex;
+}
+.left-block__icon {
+  padding: 0px 15px 0px 0px;
+}
+
+.left-block__content {
+  color: #c4c4c4;
+}
+.left-block__slug {
+  font-weight: bold;
+  margin: 0px 0px 5px 0px;
+  font-size: 14px;
+}
+.left-block__text {
+}
+.create-order__right-block {
+}
+.right-block {
+}
+.right-block__form {
+}
+.right-block__block {
+  display: flex;
+  flex-direction: column;
+}
+.right-block__page_numbers {
+  display: flex;
+  flex-direction: row;
+}
+.right-block__page_nr {
+  margin: 0px 10px 0px 0px;
+}
+.right-block__page_nr label {
+  font-weight: normal;
+  margin: 0px 10px 0px 0px;
+}
+.right-block__page_nr input {
+  font-size: 14px;
+  width: 60px;
+}
+.right-block__label {
+  font-weight: 600;
+  padding: 0px 0px 7px 0px;
+}
+.right-block__block input, .right-block__block select {
+  padding: 0px 0px 0px 10px;
+  height: 40px;
+  max-width: 360px;
+  border: 2px solid #DEDEDE;
+  border-radius: 3px;
+  margin: 0px 0px 20px 0px;
+}
+.right-block__block select {
+  cursor: pointer;
+}
+.right-block__block textarea {
+  width: 280px;
+  height: 100px;
+  border: 2px solid #DEDEDE;
+  border-radius: 3px;
+  margin: 0px 0px 20px 0px;
+  resize: none;
+  font-size: 14px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+.right-block__block input:hover, .right-block__block select:hover, .right-block__block textarea:hover {
+  border-color: #000;
+}
+
+.right-block__buget {
+  width: 210px;
+}
+</style>
+
+{% for message in messages %}
+{{ message }}
+{% endfor %}
+<div class="create-order">
+  <div class="create-order__page-title">Formular de comandă</div>
+  <div class="create-order__wrapper">
+    <div class="create-order__block">
+      <div class="create-order__left-block left-block">
+        <div class="create-order__title">
+          Important
+        </div>
+        <div class="left-block__block">
+          <div class="left-block__icon">
+            <img src="{% static 'images/low_price.png' %}" alt="low price">
+          </div>
+          <div class="left-block__content">
+            <div class="left-block__slug">Prețuti mici</div>
+            <div class="left-block__text">Lucrați cu autorii fără <br> intermediari</div>
+          </div>
+        </div>
+        <div class="left-block__block">
+          <div class="left-block__icon">
+            <img src="{% static 'images/guarantee.webp' %}" alt="guarantee">
+          </div>
+          <div class="left-block__content">
+            <div class="left-block__slug">Calitate garantată</div>
+            <div class="left-block__text">După finalizarea comenzii, <br> toate modificările sunt gratuite.</div>
+          </div>
+        </div>
+        <div class="left-block__block">
+          <div class="left-block__icon">
+            <img src="{% static 'images/in_time.webp' %}" alt="in time">
+          </div>
+          <div class="left-block__content">
+            <div class="left-block__slug">Fix la timp</div>
+            <div class="left-block__text">Dumneavoastră specificați <br> termenul limită</div>
+          </div>
+        </div>
+      </div>
+      <div class="create-order__right-block right-block">
+        <div class="create-order__title">Comanda</div>
+        <form class="right-block__form" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="right-block__block">
+            <label class="right-block__label" for="id_title">Scrieți titlul lucrării</label>
+            {{ form.title }}
+          </div>
+          <div class="right-block__block">
+            <label class="right-block__label" for="id_short-description">Scrieți descrierea scurtă a lucrării</label>
+            {{ form.short_description }}
+          </div>
+          <div class="right-block__block">
+            <label class="right-block__label" for="id_lessons">Alegeți subiectul</label>
+            {{ form.lessons }}
+          </div>
+          <div class="right-block__block">
+            <label class="right-block__label" for="id_work_type">Alegeți tipul lucrării</label>
+            {{ form.work_type }}
+
+          </div>
+          <div class="right-block__block">
+            <label class="right-block__label" for="id_short-description">Data de livrare</label>
+            {% for field in form.limit_date %}
+            {{ field }}
+            {% endfor %}
+          </div>
+          <div class="right-block__block">
+            <label class="right-block__label" for="id_description">Scrieți descrierea lucrării</label>
+            {{ form.description }}
+          </div>
+          <div class="right-block__block">
+            <label for="" class="right-block__label">Numărul de paginii</label>
+            <div class="right-block__page_numbers">
+              <div class="right-block__page_nr">
+                <label class="right-block__label" for="id_min_size">de la</label>
+                {{ form.min_size }}
+              </div>
+              <div class="right-block__page_nr">
+                <label class="right-block__label" for="id_max_size">pînă la</label>
+                {{ form.max_size }}
+              </div>
+            </div>
+          </div>
+          <div class="right-block__block right-block__buget">
+            <label class="right-block__label" for="id_price">Buget (Lei)</label>
+            {{ form.price }}
+          </div>
+          <div class="right-block__block">
+            <label class="right-block__label" for="id_premium">Premium</label>
+            {{ form.premium }}
+          </div>
+          <!-- <button class="btn btn_file btn_file_interactive">
+            <img src="{% static 'images/paper-clip.png' %}" alt="paper clip">
+            Adăugați un fișier
+          </button> -->
+          {{ form.files }}
+          <div class="right-block__note">Mărimea maximală a fișierului 50MB</div>
+          <div class="right-block__important">
+            <button type="submit" name="place_order" class="btn btn_file">Plasați comanda</button>
+            <button type="submit" name="delete_order" class="right-block__delete">Ștergeți</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

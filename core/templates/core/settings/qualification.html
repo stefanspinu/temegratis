@@ -1,0 +1,236 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+{% for message in messages %}
+<p>{{ message }}</p>
+{% endfor %}
+<div class="qualification settings">
+  <div class="settings-settings">
+    Setări
+  </div>
+  <div class="settings-body">
+    <div class="settings-nav">
+      <ul class="settings-list">
+        {% if request.user.client %}
+        <li class="settings-link"><a class="active" href="{% url 'qualification' request.user.client.id %}">Cualificații</a></li>
+        <li class="settings-link"><a href="{% url 'personal' request.user.client.id %}">Date personale</a></li>
+        {% elif request.user.freelancer %}
+        <li class="settings-link"><a class="active" href="{% url 'qualification' request.user.freelancer.id %}">Cualificații</a></li>
+        <li class="settings-link"><a href="{% url 'personal' request.user.freelancer.id %}">Date personale</a></li>
+        {% else %}
+        <li class="settings-link"><a class="active" href="">Cualificații</a></li>
+        <li class="settings-link"><a href="">Date personale</a></li>
+        {% endif %}
+        <li class="settings-link"><a href="#">Setări de notificații</a></li>
+      </ul>
+    </div>
+    <div class="settings-info">
+      <div class="settings-block">
+        <div class="settings-title">Despre tine</div>
+        <form class="qualification__yourself yourself" method="POST">
+          {% csrf_token %}
+          {{ change_info_about_yourself_form }}
+          <div class="yourself__subtitle">
+            Detalii despre mine (caractere rămase:&nbsp;<span class="yourself__characters">240</span>)
+          </div>
+          <button type="submit" class="qualification__btn btn" name="descpription">Salvează</button>
+        </form>
+      </div>
+      <div class="settings-block">
+        <div class="settings-title">Educaţie</div>
+        <form class="qualification__education education" method="POST">
+          {% csrf_token %}
+          {{ change_education_form }}
+          <button type="submit" class="qualification__btn btn" name="education">Salvează</button>
+        </form>
+      </div>
+      <div class="settings-block">
+        <div class="settings-title">Adițional</div>
+        <form class="qualification__additional additional" method="POST">
+          {% csrf_token %}
+          {{ change_additional_education_form.as_p }}
+          <button type="submit" class="qualification__btn btn" name="additional">Salvează</button>
+        </form>
+      </div>
+      <div class="settings-block">
+        <div class="settings-title">Consultării</div>
+        <form class="qualification__consultation" method="POST">
+          {% csrf_token %}
+          {% for field in change_video_consultation_form %}
+          <label class="settings-checkbox">{{ field.label_tag }}
+            {{ field }}
+            <span class="settings-checkmark"></span>
+          </label>
+          {% endfor %}
+          <button type="submit" class="qualification__btn btn" name="video_consultations">Salvează</button>
+        </form>
+      </div>
+      <div class="settings-block">
+        <div class="settings-title">Tipuri de lucrări efectuate</div>
+        <form class="qualification__work" method="POST">
+          {% csrf_token %}
+          
+          <label class="settings-checkbox settings-checkbox_title" id="qualification_select_all">Selectați toate tipurile
+            <input type="checkbox">
+            <span class="settings-checkmark"></span>
+          </label>
+          <div class="qualification__types" id="qualification_work_type">
+            {% for field in change_work_type_form %}
+              {{ field }}
+            {% endfor %}
+          </div>
+          <button type="submit" class="qualification__btn btn" name="work_types">Salvează</button>
+        </form>
+      </div>
+      <div class="settings-block">
+        <div class="settings-title">Lucrări efectuate</div>
+        <form class="qualification__categories" method="POST">
+          {% csrf_token %}
+          <div class="qualification__category-list">
+          <ul>
+            {% for field in change_work_category_form.work_category %}
+            <li>{{ field }}</li>
+            {% endfor %}
+          </ul>
+          </div>
+          <label class="settings-checkbox settings-checkbox_title" id="qualification_select_all_lessons">Selectați toate tipurile
+            <input type="checkbox">
+            <span class="settings-checkmark"></span>
+          </label>
+          <div class="qualification__types">
+            {% for lesson in change_work_category_form.lessons %}
+            {{ lesson }}
+            {% endfor %}
+          </div>
+          <button type="submit" class="qualification__btn btn" name="category_types">Salvează</button>
+        </form>
+      </div>
+      <div class="settings-block">
+        <div class="settings-title">Limbii</div>
+        <form class="qualification__languages languages" method="POST">
+          {% csrf_token %}
+          <span class="languages__title">Indicați limbile în care puteți executa munca:</span>
+          <div class="languages__list">
+          {% for field in change_languages_form %}
+            {{ field }}
+          {% endfor %}
+          </div>
+          <button type="submit" class="qualification__btn btn" name="languages">Salvează</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  
+const qualificationLinks = document.querySelectorAll('.settings-link>a')
+for (let i = 0; i < qualificationLinks.length; i++) {
+  qualificationLinks[i].addEventListener('click', function (e) {
+    e.target.classList.toggle('active')
+    for (let j = 0; j < qualificationLinks.length; j++) {
+      if (j != i) {
+        qualificationLinks[j].classList.remove('active')
+      }
+      if (j == i) {
+        qualificationLinks[j].classList.add('active')
+      }
+    }
+  })
+}
+
+
+const categorieTyeps = document.querySelectorAll('[data-type]')
+for (let i = 0; i < categorieTyeps.length; i++) {
+  categorieTyeps[i].addEventListener('click', function (e) {
+    e.target.classList.toggle('active')
+    for (let j = 0; j < categorieTyeps.length; j++) {
+      if (j != i) {
+        categorieTyeps[j].classList.remove('active')
+      }
+      if (j == i) {
+        categorieTyeps[j].classList.add('active')
+      }
+    }
+  })
+}
+
+
+const categoryWorkLi = document.querySelectorAll('.qualification__category-list ul > li')
+const categoryWorkInput = document.querySelectorAll('.qualification__category-list ul > li > label > input')
+
+for (let i = 0; i < categoryWorkLi.length; i++) {
+  categoryWorkLi[i].addEventListener('click', function() {
+    
+    if (categoryWorkLi[i].classList.contains('active')) {
+      categoryWorkLi[i].classList.remove('active')
+    } else {
+      categoryWorkLi[i].classList.add('active')
+    }
+  })
+}
+
+for (let i = 0; i < categoryWorkInput.length; i++) {
+  if (categoryWorkInput[i].checked) {
+    categoryWorkLi[i].classList.add('active')
+  }
+}
+
+
+const selectAllCheckboxes = (allCheckbox, checkboxes, checkedCheckboxes) => {
+  let checkedCounter = 0
+  
+  for (let i = 0; i < checkedCheckboxes.length; i++) {
+    checkedCounter++
+  }
+  
+  for (let i = 0; i < checkboxes.length; i++) {
+    checkboxes[i].addEventListener('click', function() {
+      if (checkboxes[i].checked) {
+        checkedCounter++
+      } else {
+        checkedCounter--
+      }
+
+      if (checkedCounter == checkboxes.length) {
+        allCheckbox.checked = true
+      } else {
+        allCheckbox.checked = false
+      }
+    })
+  }
+
+  allCheckbox.addEventListener('click', function () {
+    for (let i = 0; i < checkboxes.length; i++) {
+      if (allCheckbox.checked) {
+        checkboxes[i].checked = true
+        checkedCounter = checkboxes.length
+      } else {
+        checkboxes[i].checked = false
+        checkedCounter = 0
+      }
+    }
+  })
+}
+
+
+try {
+  const qualificationSelectAllCheckbox = document.querySelector('#qualification_select_all input')
+  const qualificationWorkTypeCheckboxes = document.querySelectorAll('#qualification_work_type ul > li > label > input')
+  const qualificationWorkTypeCheckboxesChecked = document.querySelectorAll('#qualification_work_type ul > li > label > input:checked')
+  selectAllCheckboxes(qualificationSelectAllCheckbox, qualificationWorkTypeCheckboxes, qualificationWorkTypeCheckboxesChecked)
+} catch (error) {
+  console.log('Checkboxe not on this page');
+}
+
+try {
+  const qualificationSelectAllCheckboxLessons = document.querySelector('#qualification_select_all_lessons input')
+  const qualificationWorkTypeCheckboxesLessons = document.querySelectorAll('.qualification__lessons label input')
+  const qualificationWorkTypeCheckboxesCheckedLessons = document.querySelectorAll('.qualification__lessons label input:checked')
+  selectAllCheckboxes(qualificationSelectAllCheckboxLessons, qualificationWorkTypeCheckboxesLessons, qualificationWorkTypeCheckboxesCheckedLessons)
+} catch (error) {
+  console.log('Checkboxe not on this page');
+}
+</script>
+{% endblock %}

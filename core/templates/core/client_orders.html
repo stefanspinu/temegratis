@@ -1,0 +1,68 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="my-orders my-orders__accepted-orders">
+    <div class="my-orders__sidebar sidebar-left_second">
+      <div class="sidebar-left__title">Comenzi</div>
+      <a href="{% url 'my_orders_client' %}" class="sidebar-left__block ">
+        <div class="sidebar-left__text">Toate</div>
+        <span class="sidebar-left__nr"></span>
+      </a>
+      <a href="{% url 'client_orders_auction' request.user.client.id %}" class="sidebar-left__block ">
+        <div class="sidebar-left__text">În aucțiune</div>
+        <span class="sidebar-left__nr"></span>
+      </a>
+      <a href="{% url 'client_orders' request.user.client.id %}" class="sidebar-left__block active">
+        <div class="sidebar-left__text">În lucru</div>
+        <span class="sidebar-left__nr"></span>
+      </a>
+    </div>
+    <div class="my-orders__main main-orders accepted-orders">
+      <div class="accepted-orders__search">
+        <span>Comenzi în aucțion</span>
+        <form action="" method="GET">
+          {{ orders_filter.form.title }}
+          <button type="submit" class="btn">Caută</button>
+        </form>
+      </div>
+      <div class="main-orders__block">
+        <div class="main-orders__title">Toate comenzile</div>
+        <table class="main-orders__table">
+          <tr>
+            <th>Nr</th>
+            <th>Titlu</th>
+            <th>Suma</th>
+            <th>Comanda</th>
+          </tr>
+          {% for order in all_accepted_orders %}
+          <tr>
+            {% if forloop.counter < 10 %}
+            <td>0{{ forloop.counter }}</td>
+            {% else %}
+            <td>{{ forloop.counter }}</td>
+            {% endif %}
+            <td>{{ order.order.title }}</td>
+            <td>{{ order.order.price }}Lei</td>
+            <td>
+              <ul class="accepted-orders__freelancers">
+              {% for freelancer in order.order.freelancers.all %}
+                <li class="accepted-orders__freelancer">
+                  <a href="{% url 'client_ready_order' order.id %}">
+                    <button class="btn" style="margin: 0px 0px 0px 0px;">Vizualizează comanda</button>
+                  </a>
+                </li>
+                {% endfor %}
+              </ul>
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    const search = document.querySelector('input')
+    search.placeholder = 'Căutare după titlu'
+  </script>
+{% endblock %}
