@@ -28,7 +28,7 @@ temegratis is a marketplace, where students can buy homework, resumes, test, etc
 
 ## Freelancer perspective
 
-https://user-images.githubusercontent.com/43184137/113806630-53505300-976b-11eb-8208-f5528943b3b7.mp4
+![freelancer](https://user-images.githubusercontent.com/43184137/113920893-0cf00800-97ee-11eb-8949-c27021f52410.gif)
 
 
 
