@@ -1163,7 +1163,7 @@
                   {% endif %} -->
           
                   <span class="current">
-                    {% for i in page_obj.paginator %}
+                    {% for i in page_obj.object_list  %}  <!--page_range -->
                     <a href="?page={{ i.number }}">{{ i.number }}</a>
                     {% endfor %}
                   </span>
