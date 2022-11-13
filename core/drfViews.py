@@ -6,13 +6,14 @@ from .models import *
 from .serializers import UserSerializer, GroupSerializer
 from .permissions import *
 
-class UserViewSet(viewsets.ModelViewSet):
+
+class UserList(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
-class GroupViewSet(viewsets.ModelViewSet):
+class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [permissions.IsAuthenticated]

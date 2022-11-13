@@ -6,11 +6,12 @@ from . import drfViews
 
 
 router = routers.DefaultRouter()
-router.register(r'users', drfViews.UserViewSet)
+router.register(r'users', drfViews.UserList)
 router.register(r'groups', drfViews.GroupViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+
 ]
 
 
