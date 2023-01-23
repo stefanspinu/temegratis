@@ -19,6 +19,16 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
+class FreelancerList(generics.ListAPIView):
+    queryset = Freelancer.objects.all()
+    serializer_class = FreelancerSerializer
+
+
+class ClientList(generics.ListAPIView):
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializer
+
+
 class ClientDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer

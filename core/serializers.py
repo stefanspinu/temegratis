@@ -72,7 +72,7 @@ class FreelancerSerializer(serializers.ModelSerializer):
     )
     class Meta:
         model = Freelancer
-        fields = '__all__'
+        exclude = ['country']
     
     def create(self, validated_data):
         user = User.objects.create(
@@ -153,7 +153,7 @@ class OrderSerializer(serializers.ModelSerializer):
         slug_field='name'
     )
     lessons = LessonSerializer()
-# SA FAC CU DELIVERED DATE NULL, CA SA ARATE CA INCA II IN AUCTION???? OI STOP FUCCCK
+
     class Meta:
         model = Order
         fields = '__all__'
