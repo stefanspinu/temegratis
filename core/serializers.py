@@ -90,9 +90,31 @@ class FreelancerSerializer(serializers.ModelSerializer):
 
 class ClientSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+
+    orders_data = serializers.SerializerMethodField()
+
+    def get_orders_data(self, obj):
+        clients_orders = Order.objects.all().filter(client=obj).count()
+        in_work_orders = AcceptedOrder.objects.all().filter(
+            user=obj.user, paied=False).count()
+        finished_orders = AcceptedOrder.objects.all().filter(
+            user=obj.user, paied=True).count()
+        client_auction_orders = clients_orders - in_work_orders - finished_orders
+
+        data = {
+            'clients_orders': clients_orders,
+            'in_work_orders': in_work_orders,
+            'finished_orders': finished_orders,
+            'client_auction_orders': client_auction_orders
+        }
+
+        return data
+
     class Meta:
         model = Client
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ['country']
+        
     
     def create(self, validated_data):
         user = User.objects.create(
@@ -108,9 +130,18 @@ class ClientSerializer(serializers.ModelSerializer):
         return user
 
 
-class OrderSerializer(serializers.ModelSerializer):
+class ClientWithoutPassSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    client = ClientSerializer()
+    class Meta:
+        model = Client
+        exclude = ['country', 'password']
+    
+
+class OrderSerializer(serializers.ModelSerializer):
+    client = serializers.SlugRelatedField(
+        queryset=Client.objects.all(),
+        slug_field='first_name'
+    )
 
     freelancers = serializers.SlugRelatedField(
         many=True,
@@ -118,18 +149,15 @@ class OrderSerializer(serializers.ModelSerializer):
         slug_field='first_name'
     )
     work_type = serializers.SlugRelatedField(
-        many=True,
         queryset=Work_Type.objects.all(),
         slug_field='name'
     )
-    lessons = serializers.SlugRelatedField(
-        many=True,
-        queryset=Lesson.objects.all(),
-        slug_field='name'
-    )
+    lessons = LessonSerializer()
+# SA FAC CU DELIVERED DATE NULL, CA SA ARATE CA INCA II IN AUCTION???? OI STOP FUCCCK
     class Meta:
         model = Order
         fields = '__all__'
+
 
 
 class FavouriteOrderSerializer(serializers.ModelSerializer):
@@ -146,16 +174,21 @@ class FavouriteOrderSerializer(serializers.ModelSerializer):
 
 
 class AcceptedOrderSerializer(serializers.ModelSerializer):
-    order = OrderSerializer()
-    freelancer = Freelancer()
+    order = serializers.SlugRelatedField(
+        queryset=Order.objects.all(),
+        slug_field='title'
+    )
 
     class Meta:
         model = AcceptedOrder
-        fields = '__all__'
+        exclude = ['user']
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
-    accepted_order = AcceptedOrderSerializer()
+    title = serializers.SerializerMethodField()
+
+    def get_title(self, obj):
+        return obj.accepted_order.order.title
 
     class Meta:
         model = Feedback
