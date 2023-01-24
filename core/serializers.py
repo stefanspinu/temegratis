@@ -151,7 +151,7 @@ class OrderSerializer(serializers.ModelSerializer):
     freelancers = serializers.SlugRelatedField(
         many=True,
         queryset=Freelancer.objects.all(),
-        slug_field='first_name'
+        slug_field='first_name',
     )
     work_type = serializers.SlugRelatedField(
         queryset=Work_Type.objects.all(),

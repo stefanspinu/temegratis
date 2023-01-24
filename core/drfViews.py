@@ -48,7 +48,7 @@ class FreelancerDetails(generics.RetrieveUpdateDestroyAPIView):
 class OrdersList(generics.ListCreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = [permissions.IsAuthenticated, permissions.GroupPermission]
+    permission_classes = [permissions.IsAuthenticated, IsClientOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user, client=self.request.user.client, in_auction=True)
