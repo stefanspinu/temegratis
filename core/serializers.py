@@ -139,9 +139,14 @@ class ClientWithoutPassSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     client = serializers.SlugRelatedField(
-        queryset=Client.objects.all(),
-        slug_field='first_name'
+        slug_field='first_name',
+        read_only=True
     )
+    user = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True
+    )
+    in_auction = serializers.BooleanField(read_only=True)
 
     freelancers = serializers.SlugRelatedField(
         many=True,
@@ -152,7 +157,10 @@ class OrderSerializer(serializers.ModelSerializer):
         queryset=Work_Type.objects.all(),
         slug_field='name'
     )
-    lessons = LessonSerializer()
+    lessons = serializers.SlugRelatedField(
+        queryset=Lesson.objects.all(),
+        slug_field='name'
+    )
 
     class Meta:
         model = Order

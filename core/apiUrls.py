@@ -8,7 +8,7 @@ from . import drfViews
 router = routers.DefaultRouter()
 router.register(r'users', drfViews.UserList)
 router.register(r'groups', drfViews.GroupViewSet)
-router.register(r'orders', drfViews.OrdersList)
+# router.register(r'orders', drfViews.OrdersList)
 router.register(r'accepted-orders', drfViews.AcceptedOrdersList)
 router.register(r'work-types', drfViews.WorkTypesList)
 router.register(r'work-categories', drfViews.WorkCategoriesList)
@@ -23,6 +23,7 @@ urlpatterns = [
     path('clients/<str:pk>', drfViews.ClientDetails.as_view(), name='client-details'),
     path('freelancers/', drfViews.FreelancerList.as_view(), name='freelancers'),
     path('freelancers/<str:pk>', drfViews.FreelancerDetails.as_view(), name='freelancer-details'),
+    path('orders/', drfViews.OrdersList.as_view(), name='orders'),
 ]
 
 

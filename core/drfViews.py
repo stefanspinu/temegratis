@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User, Group
 
 from rest_framework import permissions, generics, filters, viewsets
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import *
 from .serializers import *
@@ -22,6 +23,9 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
 class FreelancerList(generics.ListAPIView):
     queryset = Freelancer.objects.all()
     serializer_class = FreelancerSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ['nickname']
+    filterset_fields = ['work_type', 'work_category', 'lessons', 'languages']
 
 
 class ClientList(generics.ListAPIView):
@@ -41,10 +45,13 @@ class FreelancerDetails(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, IsSelfOrAdmin]
 
 
-class OrdersList(viewsets.ReadOnlyModelViewSet):
+class OrdersList(generics.ListCreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, permissions.GroupPermission]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user, client=self.request.user.client, in_auction=True)
 
 
 class AcceptedOrdersList(viewsets.ReadOnlyModelViewSet):
