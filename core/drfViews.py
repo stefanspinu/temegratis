@@ -8,6 +8,7 @@ from .serializers import *
 from .permissions import *
 
 
+# PAGINATOR DOESNT WORK COZ OF VIEWSET get_queryset: https://stackoverflow.com/questions/44033670/python-django-rest-framework-unorderedobjectlistwarning 
 class UserList(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -49,6 +50,18 @@ class OrdersList(generics.ListCreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     permission_classes = [permissions.IsAuthenticated, IsClientOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ['title']
+    filterset_fields = {
+        'work_type': ['exact'],
+        'lessons': ['exact'],
+        'limit_date':['range'],
+        'min_size':['gte'],
+        'max_size':['lte'],
+        'premium': ['exact'],
+        }
+    ordering = ['-id']
+
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user, client=self.request.user.client, in_auction=True)

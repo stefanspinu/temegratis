@@ -2,6 +2,8 @@ from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
 from .models import *
+from .utils import sidebar_left_helper, getDuplicatesWithCount
+
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -49,7 +51,7 @@ class LessonSerializer(serializers.ModelSerializer):
 
 
 class FreelancerSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserSerializer(read_only=True)
     work_category = serializers.SlugRelatedField(
         many=True,
         queryset=Work_Category.objects.all(),
@@ -70,6 +72,83 @@ class FreelancerSerializer(serializers.ModelSerializer):
         queryset=Lesson.objects.all(),
         slug_field='name'
     )
+    password = serializers.CharField(write_only=True)
+    orders_data = serializers.SerializerMethodField()
+    accepted_orders = serializers.SerializerMethodField()
+    freelancer_profile_details = serializers.SerializerMethodField()
+    
+    def get_freelancer_profile_details(self, obj):
+        accepted_order = AcceptedOrder.objects.all().filter(freelancer=obj)
+        feedbacks = Feedback.objects.all().filter(accepted_order__in=accepted_order)
+
+        data = sidebar_left_helper(
+            accepted_order, feedbacks, obj.id)
+        positive_rating = data['positive_rating']
+        negative_rating = data['negative_rating']
+        percentage_positive_raiting = data['percentage_positive_raiting']
+        percentage_negative_rating = data['percentage_negative_rating']
+        in_time = data['in_time']
+        late = data['late']
+        percentage_in_time = data['percentage_in_time']
+        percentage_late = data['percentage_late']
+
+        orders = []
+        for order in accepted_order:
+            orders.append(order.order)
+
+        work_types = []
+        for order in orders:
+            work_types.append(order.work_type.name)
+
+        lessons = []
+        for order in orders:
+            lessons.append(order.lessons.name)
+
+        dict_of_work_types = getDuplicatesWithCount(work_types)
+        dict_of_lessons = getDuplicatesWithCount(lessons)
+
+        data_final = {
+            'feedbacks': FeedbackSerializer(feedbacks, many=True, context=self.context).data,
+            'positive_rating': positive_rating,
+            'negative_rating': negative_rating,
+            'percentage_positive_raiting': percentage_positive_raiting,
+            'percentage_negative_rating': percentage_negative_rating,
+            'in_time': in_time,
+            'late': late,
+            'percentage_in_time': percentage_in_time,
+            'percentage_late': percentage_late,
+            'work_types': dict_of_work_types.items(),
+            'lessons': dict_of_lessons.items(),
+        }
+
+        return data_final
+
+    def get_accepted_orders(self, instance):
+        queryset = AcceptedOrder.objects.filter(freelancer=instance)
+        return AcceptedOrderSerializer(queryset, many=True, context=self.context).data
+
+    def get_orders_data(self, obj):
+        freelancer = Freelancer.objects.get(user=obj.user)
+        accepted_order = AcceptedOrder.objects.all().filter(
+            freelancer=freelancer)
+        feedbacks = Feedback.objects.all().filter(accepted_order__in=accepted_order)
+
+        data = sidebar_left_helper(
+            accepted_order, feedbacks, obj.id)
+        finished = data['finished']
+        working_at = data['working_at']
+        total_clients = data['total_clients']
+        permament_clients = data['permament_clients']
+
+        data_final = {
+            'finished': finished,
+            'working_at': working_at,
+            'total_clients': total_clients,
+            'permament_clients': permament_clients,
+        }
+
+        return data_final
+
     class Meta:
         model = Freelancer
         exclude = ['country']
@@ -89,9 +168,19 @@ class FreelancerSerializer(serializers.ModelSerializer):
 
 
 class ClientSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-
+    user = UserSerializer(read_only=True)
+    password = serializers.CharField(write_only=True)
     orders_data = serializers.SerializerMethodField()
+    clients_orders = serializers.SerializerMethodField()
+    clients_orders_in_work = serializers.SerializerMethodField()
+
+    def get_clients_orders(self, instance):
+        queryset = Order.objects.filter(client=instance)
+        return OrderSerializer(queryset, many=True, context=self.context).data
+
+    def get_clients_orders_in_work(self, instance):
+        queryset = AcceptedOrder.objects.filter(user=instance.user, completed=False)
+        return AcceptedOrderSerializer(queryset, many=True, context=self.context).data
 
     def get_orders_data(self, obj):
         clients_orders = Order.objects.all().filter(client=obj).count()
