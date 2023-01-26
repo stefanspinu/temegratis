@@ -279,6 +279,7 @@ class FavouriteOrderSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+# Maybe use validators to allow client to only view and freelancer to post, put and delete files and descriptions fields.
 class AcceptedOrderSerializer(serializers.ModelSerializer):
     order = serializers.SlugRelatedField(
         queryset=Order.objects.all(),

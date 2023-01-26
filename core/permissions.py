@@ -1,5 +1,5 @@
 from rest_framework import permissions
-
+from .models import AcceptedOrder
 
 class IsSelfOrAdmin(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):

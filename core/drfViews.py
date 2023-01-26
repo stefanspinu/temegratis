@@ -80,6 +80,8 @@ class AcceptedOrdersList(generics.ListCreateAPIView):
         serializer.save(user=serializer.validated_data['order'].user, freelancer=self.request.user.freelancer)
 
 # ONLY FREELANCER SHOULD BE ABLE TO ADD FILES AND OWNER TO VIEW WHEN paid=True
+
+# Think of something with update method or passing giving access to the serializer to the request with __init__ or somehow else
 class AcceptedOrderDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = AcceptedOrder.objects.all().order_by('id')
     serializer_class = AcceptedOrderSerializer
