@@ -42,14 +42,14 @@ class FreelancersFileter(django_filters.FilterSet):
 from django_filters import rest_framework as filters
 from django.db.models import Count
 
-class OrderLessThanThreeFreelancersFilter(filters.FilterSet):
-    less_than_three_freelancers = filters.BooleanFilter(method='filter_less_than_three_freelancers')
+class OrderFilter(filters.FilterSet):
+    less_than_three_freelancers = django_filters.NumberFilter(field_name='num_freelancers', lookup_expr='lt')
 
     class Meta:
         model = Order
-        fields = ['less_than_three_freelancers']
+        fields = ['work_type','lessons','limit_date','min_size','max_size','premium','less_than_three_freelancers']
 
-    def filter_less_than_three_freelancers(self, queryset, name, value):
-        if value:
-            return queryset.annotate(num_freelancers=Count('freelancers')).filter(num_freelancers__lt=3)
-        return queryset
+    # added custom field called num_freelancers
+    def __init__(self, *args, **kwargs):
+        super(OrderFilter, self).__init__(*args, **kwargs)
+        self.queryset = self.queryset.annotate(num_freelancers=Count('freelancers'))
