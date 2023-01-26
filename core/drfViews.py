@@ -6,6 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import *
 from .serializers import *
 from .permissions import *
+from .filters import OrderLessThanThreeFreelancersFilter
 
 
 class UserList(viewsets.ReadOnlyModelViewSet):
@@ -51,6 +52,7 @@ class OrdersList(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated, IsClientOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ['title']
+    #DOESNT WORK
     filterset_fields = {
         'work_type': ['exact'],
         'lessons': ['exact'],
@@ -59,7 +61,8 @@ class OrdersList(generics.ListCreateAPIView):
         'max_size':['lte'],
         'premium': ['exact'],
         }
-
+    #WORKS
+    filterset_class = OrderLessThanThreeFreelancersFilter
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user, client=self.request.user.client, in_auction=True)

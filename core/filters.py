@@ -37,3 +37,19 @@ class FreelancersFileter(django_filters.FilterSet):
     class Meta:
         model = Freelancer
         fields = ['first_name', 'work_type', 'work_category']
+
+
+from django_filters import rest_framework as filters
+from django.db.models import Count
+
+class OrderLessThanThreeFreelancersFilter(filters.FilterSet):
+    less_than_three_freelancers = filters.BooleanFilter(method='filter_less_than_three_freelancers')
+
+    class Meta:
+        model = Order
+        fields = ['less_than_three_freelancers']
+
+    def filter_less_than_three_freelancers(self, queryset, name, value):
+        if value:
+            return queryset.annotate(num_freelancers=Count('freelancers')).filter(num_freelancers__lt=3)
+        return queryset
