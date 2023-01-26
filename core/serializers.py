@@ -166,6 +166,12 @@ class FreelancerSerializer(serializers.ModelSerializer):
 
         return user
 
+    
+class FreelancerOnlyNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Freelancer
+        fields = ['first_name']
+
 
 class ClientSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -237,11 +243,14 @@ class OrderSerializer(serializers.ModelSerializer):
     )
     in_auction = serializers.BooleanField(read_only=True)
 
-    freelancers = serializers.SlugRelatedField(
-        many=True,
-        queryset=Freelancer.objects.all(),
-        slug_field='first_name',
-    )
+    freelancers = serializers.SerializerMethodField()
+
+    def get_freelancers(self, instance):
+        dataa = []
+        for i in instance.freelancers.all():
+            queryset = Freelancer.objects.filter(first_name=i.first_name)
+            dataa.append(FreelancerOnlyNameSerializer(queryset, many=True, context=self.context).data)
+        return dataa
     work_type = serializers.SlugRelatedField(
         queryset=Work_Type.objects.all(),
         slug_field='name'

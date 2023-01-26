@@ -8,21 +8,20 @@ from .serializers import *
 from .permissions import *
 
 
-# PAGINATOR DOESNT WORK COZ OF VIEWSET get_queryset: https://stackoverflow.com/questions/44033670/python-django-rest-framework-unorderedobjectlistwarning 
 class UserList(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('id')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Group.objects.all()
+    queryset = Group.objects.all().order_by('id')
     serializer_class = GroupSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
 class FreelancerList(generics.ListAPIView):
-    queryset = Freelancer.objects.all()
+    queryset = Freelancer.objects.all().order_by('id')
     serializer_class = FreelancerSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ['nickname']
@@ -47,7 +46,7 @@ class FreelancerDetails(generics.RetrieveUpdateDestroyAPIView):
 
 
 class OrdersList(generics.ListCreateAPIView):
-    queryset = Order.objects.all()
+    queryset = Order.objects.all().order_by('id')
     serializer_class = OrderSerializer
     permission_classes = [permissions.IsAuthenticated, IsClientOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
@@ -60,34 +59,48 @@ class OrdersList(generics.ListCreateAPIView):
         'max_size':['lte'],
         'premium': ['exact'],
         }
-    ordering = ['-id']
 
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user, client=self.request.user.client, in_auction=True)
 
+    
+class OrderDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnlyClient]
 
-class AcceptedOrdersList(viewsets.ReadOnlyModelViewSet):
-    queryset = AcceptedOrder.objects.all()
+
+class AcceptedOrdersList(generics.ListCreateAPIView):
+    queryset = AcceptedOrder.objects.all().order_by('id')
+    serializer_class = AcceptedOrderSerializer
+    permission_classes = [permissions.IsAuthenticated]  
+
+    def perform_create(self, serializer):
+        serializer.save(user=serializer.validated_data['order'].user, freelancer=self.request.user.freelancer)
+
+# ONLY FREELANCER SHOULD BE ABLE TO ADD FILES AND OWNER TO VIEW WHEN paid=True
+class AcceptedOrderDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = AcceptedOrder.objects.all().order_by('id')
     serializer_class = AcceptedOrderSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
 class WorkTypesList(viewsets.ReadOnlyModelViewSet):
-    queryset = Work_Type.objects.all()
+    queryset = Work_Type.objects.all().order_by('id')
     serializer_class = WorkTypeSerializer
 
 
 class WorkCategoriesList(viewsets.ReadOnlyModelViewSet):
-    queryset = Work_Category.objects.all()
+    queryset = Work_Category.objects.all().order_by('id')
     serializer_class = WorkCategorySerializer
 
 
 class LanguagesList(viewsets.ReadOnlyModelViewSet):
-    queryset = Language.objects.all()
+    queryset = Language.objects.all().order_by('id')
     serializer_class = LanguageSerializer
 
 
 class FeedbacksList(viewsets.ReadOnlyModelViewSet):
-    queryset = Feedback.objects.all()
+    queryset = Feedback.objects.all().order_by('id')
     serializer_class = FeedbackSerializer
