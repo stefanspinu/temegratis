@@ -72,13 +72,31 @@ class AcceptedOrdersList(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=serializer.validated_data['order'].user, freelancer=self.request.user.freelancer)
 
-# ONLY FREELANCER SHOULD BE ABLE TO ADD FILES AND OWNER TO VIEW WHEN paid=True
 
+# ONLY FREELANCER SHOULD BE ABLE TO ADD FILES AND OWNER TO VIEW WHEN paid=True
 # Think of something with update method or passing giving access to the serializer to the request with __init__ or somehow else
+# class AcceptedOrderDetails(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = AcceptedOrder.objects.all().order_by('id')
+#     serializer_class = AcceptedOrderSerializer
+#     permission_classes = [permissions.IsAuthenticated]
+from rest_framework.exceptions import PermissionDenied
+
+
 class AcceptedOrderDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = AcceptedOrder.objects.all().order_by('id')
     serializer_class = AcceptedOrderSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    # think of smth here...
+    def perform_update(self, serializer):
+        instance = self.get_object()
+        if self.request.user.client and not instance.paied:
+            raise PermissionDenied("Cannot update completed field before payment")
+        elif self.request.user.client:
+            serializer.save(completed=serializer.validated_data['completed'])
+        else:
+            serializer.save(files=serializer.validated_data['files'], description=serializer.validated_data['description'])
+
 
 
 class WorkTypesList(viewsets.ReadOnlyModelViewSet):

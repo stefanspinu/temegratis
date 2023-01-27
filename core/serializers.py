@@ -4,6 +4,7 @@ from rest_framework import serializers
 from .models import *
 from .utils import sidebar_left_helper, getDuplicatesWithCount
 
+from django_countries.serializer_fields import CountryField
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -51,6 +52,7 @@ class LessonSerializer(serializers.ModelSerializer):
 
 
 class FreelancerSerializer(serializers.ModelSerializer):
+    country = CountryField()
     user = UserSerializer(read_only=True)
     work_category = serializers.SlugRelatedField(
         many=True,
@@ -72,7 +74,7 @@ class FreelancerSerializer(serializers.ModelSerializer):
         queryset=Lesson.objects.all(),
         slug_field='name'
     )
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, required=False)
     orders_data = serializers.SerializerMethodField()
     accepted_orders = serializers.SerializerMethodField()
     freelancer_profile_details = serializers.SerializerMethodField()
@@ -150,8 +152,8 @@ class FreelancerSerializer(serializers.ModelSerializer):
         return data_final
 
     class Meta:
+        fields = '__all__'
         model = Freelancer
-        exclude = ['country']
     
     def create(self, validated_data):
         user = User.objects.create(
@@ -174,8 +176,9 @@ class FreelancerOnlyNameSerializer(serializers.ModelSerializer):
 
 
 class ClientSerializer(serializers.ModelSerializer):
+    country = CountryField()
     user = UserSerializer(read_only=True)
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, required=False)
     orders_data = serializers.SerializerMethodField()
     clients_orders = serializers.SerializerMethodField()
     clients_orders_in_work = serializers.SerializerMethodField()
@@ -207,8 +210,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        # fields = '__all__'
-        exclude = ['country']
+        fields = '__all__'
         
     
     def create(self, validated_data):
@@ -226,10 +228,11 @@ class ClientSerializer(serializers.ModelSerializer):
 
 
 class ClientWithoutPassSerializer(serializers.ModelSerializer):
+    country = CountryField()
     user = UserSerializer()
     class Meta:
         model = Client
-        exclude = ['country', 'password']
+        exclude = ['password']
     
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -301,3 +304,13 @@ class FeedbackSerializer(serializers.ModelSerializer):
         model = Feedback
         fields = '__all__'
 
+
+class FreelancerAcceptedOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AcceptedOrder
+        fields = ('files', 'description', 'completed', 'delivered_date')
+
+class UserAcceptedOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AcceptedOrder
+        fields = ('paied',)

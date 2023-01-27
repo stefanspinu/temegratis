@@ -42,14 +42,21 @@ class FreelancersFileter(django_filters.FilterSet):
 from django_filters import rest_framework as filters
 from django.db.models import Count
 
+
+class ExcludeCurrentFreelancerFilter(django_filters.Filter):
+    def filter(self, qs, value):
+        if not value:
+            return qs
+        return qs.exclude(freelancers=value)
+
 class OrderFilter(filters.FilterSet):
-    less_than_three_freelancers = django_filters.NumberFilter(field_name='num_freelancers', lookup_expr='lt')
+    less_than_x_freelancers = django_filters.NumberFilter(field_name='num_freelancers', lookup_expr='lt')
+    exclude_current_freelancer = ExcludeCurrentFreelancerFilter()
 
     class Meta:
         model = Order
-        fields = ['work_type','lessons','limit_date','min_size','max_size','premium','less_than_three_freelancers']
+        fields = ['work_type','lessons','limit_date','min_size','max_size','premium','less_than_x_freelancers','exclude_current_freelancer']
 
-    # added custom field called num_freelancers
     def __init__(self, *args, **kwargs):
         super(OrderFilter, self).__init__(*args, **kwargs)
         self.queryset = self.queryset.annotate(num_freelancers=Count('freelancers'))
